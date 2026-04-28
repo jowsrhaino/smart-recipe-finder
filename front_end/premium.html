@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Premium | Recipe Finder</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    html, body{
+      height:100%;
+      overflow:hidden;
+    }
+    .premium-wrap{
+      padding:70px 120px 90px;
+      color:#f8f4ea;
+    }
+    .premium-hero{
+      display:grid;
+      grid-template-columns:1.1fr 0.9fr;
+      gap:40px;
+      align-items:center;
+      margin-bottom:40px;
+    }
+    .premium-hero h2{
+      font-family:'Playfair Display',serif;
+      font-size:62px;
+      line-height:1.05;
+    }
+    .premium-hero p{
+      margin-top:18px;
+      color:#f1ead7;
+      font-size:18px;
+    }
+    .premium-cta{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 36px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#ffcc4d,#ffe08a);
+      color:#1a1200;
+      box-shadow:0 12px 28px rgba(255,204,77,0.28);
+      text-decoration:none;
+      font-weight:600;
+      margin-top:26px;
+    }
+    .premium-cta:hover{
+      transform:translateY(-1px);
+      box-shadow:0 16px 34px rgba(255,204,77,0.36);
+    }
+    .perk-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:22px;
+    }
+    .perk-card{
+      background:linear-gradient(160deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04));
+      border:1px solid rgba(255,215,0,0.35);
+      box-shadow:0 16px 32px rgba(0,0,0,0.25);
+      border-radius:22px;
+      padding:20px;
+      backdrop-filter:blur(10px);
+    }
+    .perk-card h3{
+      font-family:'Playfair Display',serif;
+      margin-bottom:8px;
+    }
+    .perk-card p{
+      color:#f0ead9;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .premium-image{
+      width:100%;
+      border-radius:24px;
+      border:1px solid rgba(255,215,0,0.4);
+      box-shadow:0 24px 50px rgba(0,0,0,0.45);
+    }
+    .payment-card{
+      margin-top:40px;
+      padding:26px;
+      border-radius:22px;
+      background:linear-gradient(160deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04));
+      border:1px solid rgba(255,215,0,0.35);
+      box-shadow:0 16px 32px rgba(0,0,0,0.25);
+      display:grid;
+      gap:14px;
+      max-width:520px;
+    }
+    .trial-flow{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      background:rgba(5,5,5,0.7);
+      z-index:20;
+    }
+    .trial-flow.active{
+      display:flex;
+    }
+    .trial-panel{
+      width:min(720px,92vw);
+      display:grid;
+      gap:18px;
+      position:relative;
+    }
+    .trial-close{
+      position:absolute;
+      top:-16px;
+      right:-16px;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:1px solid rgba(255,215,0,0.6);
+      background:rgba(0,0,0,0.85);
+      color:#ffe8a3;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 10px 22px rgba(0,0,0,0.35);
+    }
+    .trial-close:hover{
+      transform:translateY(-1px);
+    }
+    .trial-step{
+      background:linear-gradient(160deg,rgba(255,255,255,0.14),rgba(255,255,255,0.05));
+      border:1px solid rgba(255,215,0,0.35);
+      box-shadow:0 18px 36px rgba(0,0,0,0.3);
+      border-radius:20px;
+      padding:20px;
+      display:grid;
+      gap:12px;
+    }
+    .trial-step h3{
+      font-family:'Playfair Display',serif;
+      font-size:24px;
+    }
+    .trial-step p{
+      color:#f1ead7;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .trial-step.hidden{
+      display:none;
+    }
+    #paymentStep{
+      background:#000;
+    }
+    #confirmStep{
+      background:#000;
+    }
+    #accessStep{
+      background:#000;
+    }
+    .trial-step button{
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      cursor:pointer;
+      background:linear-gradient(135deg,#ffcc4d,#ffe08a);
+      color:#1a1200;
+      box-shadow:0 10px 24px rgba(255,204,77,0.25);
+      font-weight:600;
+    }
+    .trial-step .secondary-btn{
+      background:rgba(255,255,255,0.16);
+      border:1px solid rgba(255,215,0,0.45);
+      color:#fff6dc;
+    }
+    .trial-step input,
+    .trial-step select{
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,215,0,0.55);
+      background:rgba(255,255,255,0.12);
+      color:#fff;
+      outline:none;
+    }
+    .trial-status{
+      font-size:13px;
+      color:#f3ecd6;
+    }
+    .saved-plans{
+      display:grid;
+      gap:8px;
+      margin-top:2px;
+    }
+    .saved-plan-item{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,215,0,0.4);
+      background:rgba(255,255,255,0.08);
+      font-size:13px;
+      color:#fff3d6;
+    }
+    .saved-plan-item.active{
+      border-color:rgba(255,215,0,0.75);
+      background:rgba(255,204,77,0.18);
+    }
+    .saved-plan-meta{
+      color:#f1e6c8;
+      opacity:.95;
+    }
+    .payment-card input{
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,215,0,0.55);
+      background:rgba(255,255,255,0.12);
+      color:#fff;
+      outline:none;
+    }
+    .payment-card button{
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      cursor:pointer;
+      background:linear-gradient(135deg,#ffcc4d,#ffe08a);
+      color:#1a1200;
+      box-shadow:0 10px 24px rgba(255,204,77,0.25);
+      font-weight:600;
+    }
+    .payment-status{
+      font-size:14px;
+      color:#f3ecd6;
+    }
+    @media(max-width:900px){
+      .premium-wrap{padding:60px 30px 70px}
+      .premium-hero{grid-template-columns:1fr}
+      .premium-hero h2{font-size:46px}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gold"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-smoke"></div>
+  <div class="gold-particles"></div>
+
+  <header class="navbar">
+    <h1>🍽 Recipe Finder</h1>
+    <nav>
+      <a href="/user">Home</a>
+      <a href="/recipes">Recipes</a>
+      <a href="/user/add-recipe">Add Recipe</a>
+      <a href="/chefs">Chefs</a>
+      <a href="/contact">Contact</a>
+      <a href="/premium" class="nav-btn">Premium</a>
+    </nav>
+  </header>
+
+  <main class="premium-wrap">
+    <section class="premium-hero">
+      <div>
+        <h2>Go Premium. Cook Like a Studio.</h2>
+        <p>Unlock world-class chef collections, guided plating tutorials, and ingredient pairing intelligence.</p>
+        <button class="premium-cta" id="startTrialBtn" type="button">Start Premium Trial</button>
+      </div>
+      <div>
+        <img class="premium-image" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80" alt="Premium dish">
+      </div>
+    </section>
+
+    <section class="perk-grid">
+      <article class="perk-card">
+        <h3>Chef Masterclasses</h3>
+        <p>Step-by-step video walkthroughs with plating guides and timing breakdowns.</p>
+      </article>
+      <article class="perk-card">
+        <h3>Global Recipe Library</h3>
+        <p>Explore world dishes by region, technique, and seasonal ingredient maps.</p>
+      </article>
+      <article class="perk-card">
+        <h3>Smart Ingredient Match</h3>
+        <p>See what to cook with what's in your kitchen, plus premium flavor swaps.</p>
+      </article>
+      <article class="perk-card">
+        <h3>Weekly Premium Drops</h3>
+        <p>Curated menus delivered every Friday with chef notes and pairings.</p>
+      </article>
+    </section>
+
+    <section class="trial-flow" id="trialFlow">
+      <div class="trial-panel">
+      <button class="trial-close" id="trialCloseBtn" type="button">X</button>
+      <div class="trial-step hidden" id="trialStep">
+        <h3>Start Premium Trial</h3>
+        <p>Trial unlock requires payment setup. You will confirm your email after payment.</p>
+      </div>
+
+      <div class="trial-step hidden" id="paymentStep">
+        <h3>Payment Setup (Mock)</h3>
+        <p>Enter your registered email and complete the demo payment.</p>
+        <p id="premiumPlanMeta" class="trial-status"></p>
+        <select id="planSelect"></select>
+        <div id="savedPlansList" class="saved-plans"></div>
+        <input id="paymentEmail" type="email" placeholder="Email address">
+        <button id="payBtn" type="button">Pay ₹199 (Mock)</button>
+        <div id="paymentStatus" class="trial-status"></div>
+      </div>
+
+      <div class="trial-step hidden" id="confirmStep">
+        <h3>Email Confirmation</h3>
+        <p>OTP has been sent to your email. Enter it to activate premium.</p>
+        <input id="confirmCodeInput" type="text" placeholder="Enter OTP">
+        <button id="confirmBtn" type="button">Confirm Email</button>
+        <button id="resendOtpBtn" class="secondary-btn" type="button">Resend OTP</button>
+        <div id="confirmStatus" class="trial-status"></div>
+      </div>
+
+      <div class="trial-step hidden" id="accessStep">
+        <h3 id="accessTitle">Premium Activated</h3>
+        <p id="accessMessage">Your premium trial is active. Enjoy the studio experience.</p>
+        <a id="accessLink" class="premium-cta" href="/premium_access.html">Go to Premium Access</a>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const startTrialBtn = document.getElementById("startTrialBtn");
+    const trialFlow = document.getElementById("trialFlow");
+    const trialCloseBtn = document.getElementById("trialCloseBtn");
+    const trialStep = document.getElementById("trialStep");
+    const paymentStep = document.getElementById("paymentStep");
+    const confirmStep = document.getElementById("confirmStep");
+    const accessStep = document.getElementById("accessStep");
+
+    const payBtn = document.getElementById("payBtn");
+    const planSelect = document.getElementById("planSelect");
+    const paymentEmail = document.getElementById("paymentEmail");
+    const paymentStatus = document.getElementById("paymentStatus");
+    const premiumPlanMeta = document.getElementById("premiumPlanMeta");
+    const savedPlansList = document.getElementById("savedPlansList");
+    const confirmCodeInput = document.getElementById("confirmCodeInput");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const resendOtpBtn = document.getElementById("resendOtpBtn");
+    const confirmStatus = document.getElementById("confirmStatus");
+    const accessTitle = document.getElementById("accessTitle");
+    const accessMessage = document.getElementById("accessMessage");
+    const accessLink = document.getElementById("accessLink");
+
+    let currentPaymentId = "";
+    let currentPremiumSettings = {
+      plans: [],
+      defaultPlanId: ""
+    };
+
+    paymentEmail.value = (localStorage.getItem("userEmail") || "").trim();
+
+    function formatAmount(amount, currency) {
+      const normalizedCurrency = String(currency || "INR").toUpperCase();
+      const symbol = normalizedCurrency === "INR" ? "Rs " : "";
+      return `${symbol}${amount} ${normalizedCurrency}`.trim();
+    }
+
+    function formatPlanDuration(durationDays) {
+      const days = Number(durationDays);
+      if (!Number.isFinite(days) || days <= 0) {
+        return "-";
+      }
+      const hours = Math.round(days * 24 * 100) / 100;
+      const roundedDays = Math.round(days * 100) / 100;
+      if (hours < 24) {
+        return `${hours} hour${hours === 1 ? "" : "s"}`;
+      }
+      if (Number.isInteger(roundedDays)) {
+        return `${roundedDays} day${roundedDays === 1 ? "" : "s"}`;
+      }
+      return `${roundedDays} days`;
+    }
+
+    function getSelectedPlan() {
+      const plans = Array.isArray(currentPremiumSettings.plans) ? currentPremiumSettings.plans : [];
+      const selectedId = (planSelect.value || currentPremiumSettings.defaultPlanId || "").trim();
+      return plans.find((plan) => String(plan.id) === selectedId) || plans[0] || null;
+    }
+
+    function renderSavedPlans(plans, selectedId) {
+      savedPlansList.innerHTML = "";
+      if (!Array.isArray(plans) || !plans.length) {
+        const empty = document.createElement("div");
+        empty.className = "trial-status";
+        empty.textContent = "No premium plans configured.";
+        savedPlansList.appendChild(empty);
+        return;
+      }
+      plans.forEach((plan) => {
+        const row = document.createElement("div");
+        const isActive = String(plan.id) === String(selectedId);
+        row.className = `saved-plan-item${isActive ? " active" : ""}`;
+
+        const name = document.createElement("div");
+        name.textContent = plan.name || "Premium Plan";
+
+        const meta = document.createElement("div");
+        meta.className = "saved-plan-meta";
+        meta.textContent = `${formatAmount(plan.amount, plan.currency)} | ${formatPlanDuration(plan.durationDays)}`;
+
+        row.appendChild(name);
+        row.appendChild(meta);
+        savedPlansList.appendChild(row);
+      });
+    }
+
+    function renderPremiumAmount() {
+      const plans = Array.isArray(currentPremiumSettings.plans) ? currentPremiumSettings.plans : [];
+      if (!plans.length) {
+        premiumPlanMeta.textContent = "No premium plans configured.";
+        payBtn.disabled = true;
+        renderSavedPlans([], "");
+        return;
+      }
+
+      const currentValue = String(planSelect.value || currentPremiumSettings.defaultPlanId || "");
+      planSelect.innerHTML = "";
+      plans.forEach((plan) => {
+        const option = document.createElement("option");
+        option.value = plan.id;
+        option.textContent = `${plan.name} | ${formatAmount(plan.amount, plan.currency)} | ${formatPlanDuration(plan.durationDays)}`;
+        planSelect.appendChild(option);
+      });
+      planSelect.value = plans.some((plan) => String(plan.id) === currentValue)
+        ? currentValue
+        : String(currentPremiumSettings.defaultPlanId || plans[0].id);
+      renderSavedPlans(plans, planSelect.value);
+
+      const selected = getSelectedPlan();
+      if (!selected) {
+        premiumPlanMeta.textContent = "No premium plans configured.";
+        payBtn.disabled = true;
+        renderSavedPlans(plans, "");
+        return;
+      }
+
+      const text = formatAmount(selected.amount, selected.currency);
+      payBtn.disabled = false;
+      payBtn.textContent = `Pay ${text} (Mock)`;
+      premiumPlanMeta.textContent = `${selected.name} | ${text} | ${formatPlanDuration(selected.durationDays)}`;
+    }
+
+    async function loadPremiumSettings() {
+      try {
+        const email = (paymentEmail.value || "").trim().toLowerCase();
+        const query = email ? `?email=${encodeURIComponent(email)}` : "";
+        const res = await fetch(`/api/premium/settings${query}`);
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to load premium settings");
+        }
+
+        const plans = Array.isArray(data.plans) ? data.plans : [];
+        currentPremiumSettings = {
+          plans,
+          defaultPlanId: data.defaultPlanId || (plans[0] ? plans[0].id : "")
+        };
+      } catch (err) {
+        currentPremiumSettings = {
+          plans: [],
+          defaultPlanId: ""
+        };
+      } finally {
+        renderPremiumAmount();
+      }
+    }
+
+    function showStep(step) {
+      step.classList.remove("hidden");
+      if (trialFlow) {
+        trialFlow.classList.add("active");
+      }
+    }
+
+    function hideStep(step) {
+      step.classList.add("hidden");
+    }
+
+    function closeTrialFlow() {
+      [trialStep, paymentStep, confirmStep, accessStep].forEach((step) => {
+        if (step) {
+          step.classList.add("hidden");
+        }
+      });
+      if (trialFlow) {
+        trialFlow.classList.remove("active");
+      }
+    }
+
+    function setAccessState({ title, message, active }) {
+      accessTitle.textContent = title;
+      accessMessage.textContent = message;
+      accessLink.style.display = active ? "inline-flex" : "none";
+      showStep(accessStep);
+    }
+
+    async function syncCurrentPremiumState() {
+      const email = (paymentEmail.value || "").trim().toLowerCase();
+      if (!email) {
+        return;
+      }
+      try {
+        const res = await fetch(`/api/user/premium-status?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        if (!res.ok) {
+          return;
+        }
+
+        localStorage.setItem("isPremium", String(Boolean(data.premium)));
+        localStorage.setItem("premiumStatus", data.premiumStatus || "none");
+        localStorage.setItem("premiumPendingApproval", String(Boolean(data.premiumPendingApproval)));
+        localStorage.setItem("premiumExpiresAt", data.premiumExpiresAt || "");
+        localStorage.setItem("premiumPlanName", data.premiumPlanName || "");
+
+        if (data.premium) {
+          hideStep(trialStep);
+          hideStep(paymentStep);
+          hideStep(confirmStep);
+          const planText = data.premiumPlanName ? `Plan: ${data.premiumPlanName}. ` : "";
+          setAccessState({
+            title: "Premium Already Active",
+            message: `${planText}Access is active for this account.`,
+            active: true
+          });
+          window.location.href = "/premium_access.html";
+          return;
+        }
+
+        if (data.premiumPendingApproval) {
+          hideStep(trialStep);
+          hideStep(paymentStep);
+          hideStep(confirmStep);
+          setAccessState({
+            title: "Admin Approval Pending",
+            message: "Payment is verified. Admin must grant premium access before you can enter premium studio.",
+            active: false
+          });
+        }
+      } catch {
+        // Keep page interactive even when status check fails.
+      }
+    }
+
+    async function runMockPayment() {
+      const email = (paymentEmail.value || "").trim().toLowerCase();
+      const selectedPlan = getSelectedPlan();
+      if (!email) {
+        paymentStatus.textContent = "Please enter your registered email.";
+        return;
+      }
+      if (!selectedPlan) {
+        paymentStatus.textContent = "No premium plan selected.";
+        return;
+      }
+
+      payBtn.disabled = true;
+      paymentStatus.textContent = "Creating payment...";
+
+      try {
+        const createRes = await fetch("/api/mock-payment/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            planId: selectedPlan.id
+          })
+        });
+        const createData = await createRes.json();
+        if (!createRes.ok) {
+          const hintText = createData.hint ? ` ${createData.hint}` : "";
+          throw new Error((createData.message || "Payment create failed") + hintText);
+        }
+
+        currentPaymentId = createData.paymentId;
+        const sentTo = createData.otpSentTo || email;
+        const paidText = formatAmount(createData.amount, createData.currency);
+        paymentStatus.textContent = `Payment captured (${paidText}). OTP sent to ${sentTo}.`;
+        hideStep(paymentStep);
+        showStep(confirmStep);
+      } catch (err) {
+        paymentStatus.textContent = err.message || "Mock payment failed.";
+      } finally {
+        payBtn.disabled = false;
+      }
+    }
+
+    async function confirmEmail() {
+      const entered = (confirmCodeInput.value || "").trim();
+      if (!entered) {
+        confirmStatus.textContent = "Please enter OTP.";
+        return;
+      }
+      if (!currentPaymentId) {
+        confirmStatus.textContent = "Payment session not found. Please retry payment.";
+        return;
+      }
+
+      confirmBtn.disabled = true;
+      confirmStatus.textContent = "Confirming payment...";
+
+      try {
+        const confirmRes = await fetch("/api/mock-payment/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paymentId: currentPaymentId, otp: entered })
+        });
+        const confirmData = await confirmRes.json();
+        if (!confirmRes.ok) {
+          const hintText = confirmData.hint ? ` ${confirmData.hint}` : "";
+          throw new Error((confirmData.message || "Payment confirm failed") + hintText);
+        }
+
+        localStorage.setItem("isPremium", String(Boolean(confirmData.premium)));
+        localStorage.setItem("premiumStatus", confirmData.premiumStatus || "none");
+        localStorage.setItem("premiumPendingApproval", String(Boolean(confirmData.premiumPendingApproval)));
+        localStorage.setItem("premiumExpiresAt", confirmData.premiumExpiresAt || "");
+        localStorage.setItem("premiumPlanName", confirmData.premiumPlanName || "");
+
+        confirmStatus.textContent = confirmData.message || "Payment verified.";
+        if (confirmData.premium) {
+          setAccessState({
+            title: "Premium Activated",
+            message: "Your premium access is active.",
+            active: true
+          });
+          window.location.href = "/premium_access.html";
+        } else {
+          setAccessState({
+            title: "Admin Approval Pending",
+            message: "Payment verified. Admin must grant premium access. Login again after admin approval.",
+            active: false
+          });
+        }
+      } catch (err) {
+        confirmStatus.textContent = err.message || "Confirmation failed.";
+      } finally {
+        confirmBtn.disabled = false;
+      }
+    }
+
+    async function resendOtp() {
+      if (!currentPaymentId) {
+        confirmStatus.textContent = "Payment session not found. Please retry payment.";
+        return;
+      }
+      resendOtpBtn.disabled = true;
+      confirmStatus.textContent = "Sending new OTP...";
+      try {
+        const resendRes = await fetch("/api/mock-payment/resend-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paymentId: currentPaymentId })
+        });
+        const resendData = await resendRes.json();
+        if (!resendRes.ok) {
+          const hintText = resendData.hint ? ` ${resendData.hint}` : "";
+          throw new Error((resendData.message || "Failed to resend OTP") + hintText);
+        }
+        confirmStatus.textContent = `New OTP sent to ${resendData.otpSentTo || "your email"}.`;
+      } catch (err) {
+        confirmStatus.textContent = err.message || "Failed to resend OTP.";
+      } finally {
+        resendOtpBtn.disabled = false;
+      }
+    }
+
+    startTrialBtn.addEventListener("click", () => {
+      hideStep(trialStep);
+      if (trialFlow) {
+        trialFlow.classList.add("active");
+      }
+      showStep(paymentStep);
+    });
+    trialCloseBtn.addEventListener("click", closeTrialFlow);
+
+    planSelect.addEventListener("change", renderPremiumAmount);
+    payBtn.addEventListener("click", runMockPayment);
+    confirmBtn.addEventListener("click", confirmEmail);
+    resendOtpBtn.addEventListener("click", resendOtp);
+
+    Promise.all([loadPremiumSettings(), syncCurrentPremiumState()]).catch(() => {
+      // no-op
+    });
+  </script>
+  <script src="/footer.js"></script>
+</body>
+</html>

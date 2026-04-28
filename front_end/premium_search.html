@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium Ingredient Search</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1:#0b0806;
+      --bg-2:#1a130d;
+      --card:#15100c;
+      --gold:#d4af37;
+      --gold-soft:#f7e27a;
+      --line:rgba(255,215,128,0.2);
+      --text:#f3efe9;
+      --muted:#c2b7ac;
+      --accent:#ffecd1;
+      --shadow:0 30px 60px rgba(0,0,0,0.45);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Poppins",sans-serif;
+      background:radial-gradient(circle at top right, rgba(212,175,55,0.12), transparent 55%),
+                 linear-gradient(160deg,var(--bg-1),var(--bg-2));
+      color:var(--text);
+      min-height:100vh;
+    }
+    .grain{
+      position:fixed;
+      inset:0;
+      background-image:radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size:120px 120px;
+      opacity:0.08;
+      pointer-events:none;
+      z-index:0;
+    }
+    .wrap{
+      position:relative;
+      z-index:1;
+      padding:48px 16px 80px;
+      max-width:1100px;
+      margin:0 auto;
+    }
+    header{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-bottom:28px;
+    }
+    .navbar{
+      margin-left:auto;
+      margin-right:0;
+      margin-top:-10px;
+    }
+    .page-header{
+      margin-top:40px;
+    }
+    header h1{
+      font-family:"Playfair Display",serif;
+      font-size:clamp(32px,4vw,48px);
+      margin:0;
+      color:var(--accent);
+      letter-spacing:0.5px;
+    }
+    header p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr);
+      gap:22px;
+    }
+    @media (max-width:900px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:24px;
+      box-shadow:var(--shadow);
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,215,128,0.35);
+      background:rgba(255,255,255,0.05);
+      color:var(--muted);
+      font-size:12px;
+    }
+    .pill strong{color:var(--text);font-weight:600}
+    label{
+      display:block;
+      margin:16px 0 8px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    textarea, select, input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,215,128,0.25);
+      background:rgba(255,255,255,0.04);
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+    }
+    textarea{min-height:120px;resize:vertical}
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .row > *{flex:1 1 180px}
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:12px 22px;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--gold),var(--gold-soft));
+      color:#111;
+      box-shadow:0 12px 28px rgba(212,175,55,0.35);
+    }
+    .btn-ghost{
+      background:rgba(255,255,255,0.08);
+      color:var(--text);
+      border:1px solid rgba(255,215,128,0.2);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .result-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:0 0 14px;
+      font-family:"Playfair Display",serif;
+      font-size:24px;
+    }
+    .status{
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(255,215,128,0.15);
+      color:var(--accent);
+      border:1px solid rgba(255,215,128,0.3);
+      text-transform:uppercase;
+      letter-spacing:0.6px;
+    }
+    .message{
+      font-size:14px;
+      color:var(--text);
+      line-height:1.6;
+      margin-bottom:16px;
+    }
+    .recipe-card{
+      border:1px solid rgba(255,215,128,0.2);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(0,0,0,0.35);
+    }
+    .recipe-hero{
+      display:grid;
+      grid-template-columns:140px 1fr;
+      gap:16px;
+      padding:16px;
+      border-bottom:1px solid rgba(255,215,128,0.2);
+    }
+    .recipe-hero img{
+      width:100%;
+      height:120px;
+      object-fit:cover;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.1);
+    }
+    .recipe-hero h3{
+      margin:0 0 8px;
+      font-family:"Playfair Display",serif;
+      font-size:22px;
+    }
+    .meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .section{
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,215,128,0.1);
+    }
+    .section:last-child{border-bottom:none}
+    .section h4{
+      margin:0 0 8px;
+      font-size:14px;
+      color:var(--accent);
+      letter-spacing:0.4px;
+    }
+    .ingredients{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .chip{
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,215,128,0.25);
+      color:var(--text);
+    }
+    .suggestions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .suggestions .chip{
+      cursor:pointer;
+      background:rgba(255,215,128,0.12);
+    }
+    .empty{
+      color:var(--muted);
+      font-size:14px;
+    }
+    .note{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:12px;
+    }
+    .yt-search{
+      display:flex;
+      gap:10px;
+      margin:10px 0 12px;
+      flex-wrap:wrap;
+    }
+    .yt-search input{
+      flex:1 1 220px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,215,128,0.25);
+      background:rgba(255,255,255,0.05);
+      color:var(--text);
+    }
+    .yt-search button{
+      border:none;
+      border-radius:999px;
+      padding:10px 16px;
+      font-weight:600;
+      cursor:pointer;
+      background:linear-gradient(135deg,var(--gold),var(--gold-soft));
+      color:#111;
+    }
+    .video-wrap{
+      position:relative;
+      width:100%;
+      padding-top:56.25%;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,215,128,0.25);
+      background:rgba(0,0,0,0.35);
+    }
+    .video-wrap iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+    }
+    .video-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+      margin-top:10px;
+    }
+    .video-card{
+      background:rgba(0,0,0,0.25);
+      border:1px solid rgba(255,215,128,0.2);
+      border-radius:14px;
+      padding:10px;
+    }
+    .video-card h5{
+      margin:0 0 8px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:500;
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="wrap">
+    <header class="navbar">
+      <h1>ðŸ½ Recipe Finder</h1>
+      <nav>
+        <a href="/user">Home</a>
+        <a href="/recipes">Recipes</a>
+        <a href="/user/add-recipe">Add Recipe</a>
+        <a href="/chefs">Chefs</a>
+        <a href="/contact">Contact</a>
+        <a href="/premium" class="nav-btn">Premium</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>Premium Ingredient Search</h1>
+      <p>Get a clean, focused dish suggestion crafted from your ingredients only.</p>
+      <span id="userPill" class="pill">Signed in as <strong>loading...</strong></span>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2 class="result-title">Your Ingredients</h2>
+        <label for="ingredients">Ingredients (comma separated)</label>
+        <textarea id="ingredients" placeholder="tomato, onion, garlic, pepper"></textarea>
+
+        <div class="row">
+          <div>
+            <label for="language">Language</label>
+            <select id="language">
+              <option>English</option>
+              <option>Tamil</option>
+            </select>
+          </div>
+          <div>
+            <label for="serves">Goal</label>
+            <input id="serves" type="text" placeholder="Quick dinner, light snack..." />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="searchBtn">Find Dish</button>
+          <button class="btn btn-ghost" id="clearBtn" type="button">Clear</button>
+        </div>
+        <div class="hint">Tip: Add at least two ingredients for the best match.</div>
+      </section>
+
+      <section class="card" id="resultCard">
+        <h2 class="result-title">Result <span id="statusBadge" class="status">READY</span></h2>
+        <div id="resultContent" class="empty">Add ingredients and search to see the premium result.</div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const el = (id) => document.getElementById(id);
+    const userEmail = (localStorage.getItem("userEmail") || "").trim();
+    const userName = (localStorage.getItem("userName") || "").trim();
+    const userPill = el("userPill");
+
+    function setStatus(text) {
+      el("statusBadge").textContent = text;
+    }
+
+    function redirectToNormal() {
+      window.location.href = "/recipes";
+    }
+
+    async function ensurePremiumAccess() {
+      if (!userEmail) {
+        window.location.href = "/login";
+        return;
+      }
+      userPill.innerHTML = `Signed in as <strong>${userName || userEmail}</strong>`;
+      try {
+        const res = await fetch(`/api/user/premium-status?email=${encodeURIComponent(userEmail)}`);
+        if (!res.ok) {
+          redirectToNormal();
+          return;
+        }
+        const snapshot = await res.json();
+        localStorage.setItem("isPremium", String(Boolean(snapshot.premium)));
+        localStorage.setItem("premiumStatus", snapshot.premiumStatus || "none");
+        localStorage.setItem("premiumPendingApproval", String(Boolean(snapshot.premiumPendingApproval)));
+        localStorage.setItem("premiumExpiresAt", snapshot.premiumExpiresAt || "");
+        if (!snapshot.premium) {
+          redirectToNormal();
+        }
+      } catch (err) {
+        redirectToNormal();
+      }
+    }
+
+    function formatIngredient(item) {
+      if (!item) return "";
+      const qty = item.quantity ? String(item.quantity).trim() : "";
+      const unit = item.unit ? String(item.unit).trim() : "";
+      const name = item.name || "Ingredient";
+      const qtyPart = [qty, unit].filter(Boolean).join(" ");
+      return qtyPart ? `${name} (${qtyPart})` : name;
+    }
+
+    function buildYoutubeEmbedUrl(query, index = 0) {
+      const safeQuery = encodeURIComponent(query || "recipe");
+      return {
+        embedUrl: `https://www.youtube.com/embed?listType=search&list=${safeQuery}&index=${index}`,
+        watchUrl: `https://www.youtube.com/results?search_query=${safeQuery}`
+      };
+    }
+
+    function renderYoutubeEmbed(recipe, ingredients) {
+      const title = String(recipe?.title || "").trim();
+      const ingredientText = Array.isArray(ingredients)
+        ? ingredients.map((item) => item.name || item).join(" ")
+        : "";
+      const queryText = `${title || ingredientText || "recipe"} recipe`;
+      const { watchUrl } = buildYoutubeEmbedUrl(queryText);
+      const embeds = Array.from({ length: 5 }).map((_, idx) => {
+        const { embedUrl } = buildYoutubeEmbedUrl(queryText, idx);
+        return `
+          <div class="video-card">
+            <h5>Video ${idx + 1}</h5>
+            <div class="video-wrap">
+              <iframe class="yt-embed" data-index="${idx}" src="${embedUrl}" title="YouTube Recipe Video ${idx + 1}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        `;
+      }).join("");
+      return `
+        <div class="section">
+          <h4>YouTube Video</h4>
+          <div class="yt-search">
+            <input class="yt-search-input" type="text" value="${queryText.replace(/"/g, "&quot;")}" placeholder="Search YouTube for this dish" />
+            <button class="yt-search-btn" type="button">Search YouTube</button>
+          </div>
+          <div class="video-grid">
+            ${embeds}
+          </div>
+          <div class="note">If the video doesn't load, <a class="yt-watch-link" href="${watchUrl}" target="_blank" rel="noopener">open on YouTube</a>.</div>
+        </div>
+      `;
+    }
+
+    function renderRecipe(recipe, language) {
+      if (!recipe) {
+        return "";
+      }
+      const image = recipe.image || "https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&w=600&q=80";
+      const instructions = (recipe.instructionsByLang && recipe.instructionsByLang[language]) ||
+        recipe.instructions || "";
+      const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
+
+      return `
+        <div class="recipe-card">
+          <div class="recipe-hero">
+            <img src="${image}" alt="${recipe.title || "Recipe"}" />
+            <div>
+              <h3>${recipe.title || "Chef Special"}</h3>
+              <div class="meta">
+                <span>${recipe.cuisine || "Fusion"}</span>
+                <span>${recipe.category || "World"}</span>
+                <span>Source: ${recipe.source || "AI"}</span>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <h4>Ingredients</h4>
+            <div class="ingredients">
+              ${ingredients.length ? ingredients.map((item) => `<span class="chip">${formatIngredient(item)}</span>`).join("") : "<span class=\"chip\">No ingredients listed</span>"}
+            </div>
+          </div>
+          <div class="section">
+            <h4>Instructions</h4>
+            <div class="message">${(instructions || "Instructions not available.").replace(/\n/g, "<br/>")}</div>
+          </div>
+          ${renderYoutubeEmbed(recipe, ingredients)}
+        </div>
+      `;
+    }
+
+    function renderSuggestions(items) {
+      const list = Array.isArray(items) ? items : [];
+      if (!list.length) {
+        return "";
+      }
+      return `
+        <div class="note">Suggested extra ingredients:</div>
+        <div class="suggestions">
+          ${list.map((item) => `<span class="chip suggestion-chip">${item}</span>`).join("")}
+        </div>
+      `;
+    }
+
+    function renderResult(data, language) {
+      const content = el("resultContent");
+      if (!data) {
+        content.innerHTML = "<div class=\"empty\">No result yet.</div>";
+        return;
+      }
+      const status = (data.status || (data.recipe ? "success" : "info")).toUpperCase();
+      setStatus(status);
+      const message = data.reply || data.message || "Here is your premium result.";
+      const recipeHtml = data.recipe ? renderRecipe(data.recipe, language) : "";
+      const suggestionsHtml = renderSuggestions(data.suggestedIngredients);
+
+      content.innerHTML = `
+        <div class="message">${message}</div>
+        ${recipeHtml || ""}
+        ${suggestionsHtml || ""}
+      `;
+
+      document.querySelectorAll(".suggestion-chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const textarea = el("ingredients");
+          const current = textarea.value.trim();
+          const addition = chip.textContent || "";
+          textarea.value = current ? `${current}, ${addition}` : addition;
+        });
+      });
+
+      document.querySelectorAll(".yt-search-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const wrapper = btn.closest(".section");
+          if (!wrapper) return;
+          const input = wrapper.querySelector(".yt-search-input");
+          const iframes = wrapper.querySelectorAll(".yt-embed");
+          const link = wrapper.querySelector(".yt-watch-link");
+          const query = (input?.value || "").trim() || "recipe";
+          const { watchUrl } = buildYoutubeEmbedUrl(query);
+          if (iframes && iframes.length) {
+            iframes.forEach((frame, idx) => {
+              const { embedUrl } = buildYoutubeEmbedUrl(query, idx);
+              frame.src = embedUrl;
+            });
+          }
+          if (link) link.href = watchUrl;
+        });
+      });
+    }
+
+    el("searchBtn").addEventListener("click", async () => {
+      const ingredients = el("ingredients").value.split(",").map((s) => s.trim()).filter(Boolean);
+      const language = el("language").value || "English";
+      if (!ingredients.length) {
+        setStatus("WAIT");
+        renderResult({ message: "Please add at least two ingredients." }, language);
+        return;
+      }
+      setStatus("SEARCHING");
+      renderResult({ message: "Searching your premium dish..." }, language);
+      try {
+        const res = await fetch("/api/premium/ingredient-dish", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: userEmail,
+            language,
+            ingredients
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          renderResult(data, language);
+          return;
+        }
+        renderResult(data, language);
+      } catch (err) {
+        renderResult({ message: err.message || "Failed to fetch premium dish." }, language);
+      }
+    });
+
+    el("clearBtn").addEventListener("click", () => {
+      el("ingredients").value = "";
+      el("serves").value = "";
+      setStatus("READY");
+      el("resultContent").innerHTML = "<div class=\"empty\">Add ingredients and search to see the premium result.</div>";
+    });
+
+    ensurePremiumAccess();
+  </script>
+</body>
+</html>

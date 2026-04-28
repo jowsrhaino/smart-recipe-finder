@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Chefs | Recipe Finder</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    .page-nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:28px 90px;
+      position:relative;
+      z-index:2;
+    }
+    .page-nav a{color:#eee;text-decoration:none;margin-left:28px}
+    .page-nav h1{font-family:'Playfair Display',serif;font-size:30px}
+
+    .page-hero{
+      padding:80px 120px 20px;
+      display:grid;
+      grid-template-columns:1.1fr 0.9fr;
+      gap:40px;
+      align-items:center;
+    }
+    .page-hero h2{
+      font-family:'Playfair Display',serif;
+      font-size:64px;
+      line-height:1.05;
+    }
+    .page-hero p{
+      margin:18px 0 30px;
+      color:#d4d4d4;
+      font-size:18px;
+    }
+    .cta-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 34px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#d4af37,#f7e27a);
+      color:#111;
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    .chef-grid{
+      padding:20px 120px 80px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:24px;
+    }
+    .chef-card{
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,215,0,0.25);
+      border-radius:22px;
+      padding:18px;
+      backdrop-filter:blur(12px);
+      cursor:pointer;
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .chef-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 16px 32px rgba(0,0,0,0.35);
+    }
+    .chef-card img{
+      width:100%;
+      height:220px;
+      object-fit:cover;
+      border-radius:16px;
+      border:1px solid rgba(255,215,0,0.25);
+    }
+    .chef-card h3{
+      margin:16px 0 6px;
+      font-family:'Playfair Display',serif;
+      font-size:22px;
+    }
+    .chef-card p{
+      color:#cfcfcf;
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .chef-modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,0.78);
+      padding:20px;
+      z-index:30;
+    }
+    .chef-modal.show{display:flex}
+    .chef-modal-card{
+      width:min(900px, 96vw);
+      background:transparent;
+      border:none;
+      padding:0;
+      box-shadow:none;
+    }
+    .chef-sheet{
+      width:min(794px, 96vw);
+      min-height:1123px;
+      background:linear-gradient(170deg, rgba(10,10,12,0.98), rgba(18,18,20,0.98));
+      border:1px solid rgba(255,215,0,0.28);
+      border-radius:22px;
+      padding:40px 42px;
+      box-shadow:0 30px 80px rgba(0,0,0,0.6);
+      color:#f4ead8;
+      position:relative;
+      max-height:90vh;
+      overflow:auto;
+      scrollbar-color: rgba(255,215,0,0.6) rgba(255,255,255,0.08);
+      scrollbar-width: thin;
+    }
+    .chef-sheet::-webkit-scrollbar{width:10px}
+    .chef-sheet::-webkit-scrollbar-track{background:rgba(255,255,255,0.08);border-radius:999px}
+    .chef-sheet::-webkit-scrollbar-thumb{background:rgba(255,215,0,0.6);border-radius:999px}
+    .chef-modal-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .chef-modal-title{
+      margin:0;
+      font-family:'Playfair Display',serif;
+      font-size:32px;
+      color:#ffd700;
+    }
+    .chef-modal-tagline{
+      margin:6px 0 0;
+      font-size:14px;
+      color:#d6c9b5;
+    }
+    .chef-modal-meta{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      font-size:12px;
+      color:#d6c9b5;
+    }
+    .chef-modal-meta span{
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(255,215,0,0.12);
+      border:1px solid rgba(255,215,0,0.35);
+    }
+    .chef-modal-close{
+      border:none;
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      cursor:pointer;
+      background:#ffd700;
+      color:#111;
+      font-size:18px;
+    }
+    .chef-scroll-btn{
+      border:none;
+      border-radius:999px;
+      padding:8px 14px;
+      cursor:pointer;
+      background:rgba(255,215,0,0.15);
+      color:#ffd700;
+      font-size:12px;
+      font-weight:600;
+    }
+    .chef-modal-body{
+      display:grid;
+      grid-template-columns:1fr 1.25fr;
+      gap:20px;
+      align-items:start;
+      margin-top:8px;
+    }
+    .chef-modal-body img{
+      width:100%;
+      height:260px;
+      object-fit:cover;
+      border-radius:16px;
+      border:1px solid rgba(212,175,55,0.3);
+    }
+    .chef-modal-body p{
+      color:#e9ddcc;
+      font-size:14px;
+      line-height:1.6;
+    }
+    .chef-section{
+      margin-top:16px;
+    }
+    .chef-section h3{
+      margin:0 0 8px;
+      font-size:16px;
+      color:#ffd700;
+      letter-spacing:0.4px;
+      text-transform:uppercase;
+    }
+    .chef-section p{
+      margin:0;
+      font-size:14px;
+      line-height:1.65;
+      color:#e9ddcc;
+    }
+    .chef-specials{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .chef-special{
+      border:1px solid rgba(255,215,0,0.35);
+      border-radius:999px;
+      padding:6px 12px;
+      font-size:12px;
+      color:#ffd700;
+      background:rgba(255,215,0,0.12);
+    }
+    .chef-list{
+      margin:6px 0 0;
+      padding-left:18px;
+      color:#e9ddcc;
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    @media(max-width:900px){
+      .page-nav{padding:24px 30px}
+      .page-hero{padding:60px 30px;grid-template-columns:1fr}
+      .chef-grid{padding:20px 30px 60px}
+      .page-hero h2{font-size:46px}
+      .chef-modal-body{grid-template-columns:1fr}
+      .chef-modal-body img{height:220px}
+      .chef-sheet{padding:30px 26px;min-height:auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gold"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-smoke"></div>
+  <div class="gold-particles"></div>
+
+  <header class="page-nav">
+    <h1>🍽 Recipe Finder</h1>
+    <nav>
+      <a href="/user">Home</a>
+      <a href="/recipes">Recipes</a>
+      <a href="/user/add-recipe">Add Recipe</a>
+      <a href="/chefs">Chefs</a>
+      <a href="/contact">Contact</a>
+      <a href="/premium" class="nav-btn">Premium</a>
+    </nav>
+  </header>
+
+  <section class="page-hero">
+    <div>
+      <h2>Meet the Culinary Artists</h2>
+      <p>From global street kitchens to Michelin studios — our chefs turn everyday ingredients into cinematic plates.</p>
+      <a class="cta-link" href="/recipes">Explore Their Recipes</a>
+    </div>
+    <div>
+      <img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=900&q=80" alt="Chef plating food" style="width:100%;border-radius:26px;border:1px solid rgba(255,215,0,0.25);">
+    </div>
+  </section>
+
+  <section class="chef-grid">
+    <article class="chef-card" data-name="Chef Aanya Rao" data-bio="South Indian coastal flavors with a modern, silky finish. Focused on coconut, curry leaves, and coastal aromatics." data-specials="Coconut Prawn Curry, Pepper Crab Roast, Malabar Fish Stew">
+      <img src="https://images.unsplash.com/photo-1556912167-f556f1f39fdf?auto=format&fit=crop&w=900&q=80" alt="Chef Aanya Rao">
+      <h3>Chef Aanya Rao</h3>
+      <p>South Indian coastal flavors with a modern, silky finish.</p>
+    </article>
+    <article class="chef-card" data-name="Chef Mateo Cruz" data-bio="Latin fire, slow smoke, and citrus-forward sauces. He blends wood-smoke with bright herb oils and bold marinades." data-specials="Charred Lime Brisket, Chipotle Citrus Tacos, Smoked Corn Bisque">
+      <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=900&q=80" alt="Chef Mateo Cruz">
+      <h3>Chef Mateo Cruz</h3>
+      <p>Latin fire, slow smoke, and citrus-forward sauces.</p>
+    </article>
+    <article class="chef-card" data-name="Chef Elise Laurent" data-bio="Parisian finesse with seasonal produce. Known for velvety sauces, delicate plating, and restrained elegance." data-specials="Truffle Mushroom Risotto, Herb Butter Chicken, Pear Tarte Tatin">
+      <img src="https://images.unsplash.com/photo-1528712306091-ed0763094c98?auto=format&fit=crop&w=900&q=80" alt="Chef Elise Laurent">
+      <h3>Chef Elise Laurent</h3>
+      <p>Parisian finesse with seasonal produce.</p>
+    </article>
+    <article class="chef-card" data-name="Chef Haruto Saito" data-bio="Minimalist Japanese techniques, maximum umami. Precision grilling, clean broths, and balanced textures." data-specials="Miso Glazed Cod, Sesame Soba Salad, Umami Dashi Bowl">
+      <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80" alt="Chef Haruto Saito">
+      <h3>Chef Haruto Saito</h3>
+      <p>Minimalist Japanese techniques, maximum umami.</p>
+    </article>
+  </section>
+
+  <div class="chef-modal" id="chefModal" aria-hidden="true">
+    <div class="chef-modal-card" role="dialog" aria-modal="true" aria-label="Chef details">
+      <div class="chef-sheet">
+        <div class="chef-modal-top">
+          <div>
+            <h2 class="chef-modal-title" id="chefModalTitle"></h2>
+            <p class="chef-modal-tagline" id="chefModalTagline"></p>
+            <div class="chef-modal-meta" id="chefModalMeta"></div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button class="chef-scroll-btn" id="chefScrollBtn" type="button">Auto Scroll</button>
+            <button class="chef-modal-close" id="chefModalClose" type="button" aria-label="Close">X</button>
+          </div>
+        </div>
+
+        <div class="chef-modal-body">
+          <img id="chefModalImage" src="" alt="Chef portrait">
+          <div>
+            <div class="chef-section">
+              <h3>Profile</h3>
+              <p id="chefModalBio"></p>
+            </div>
+            <div class="chef-section">
+              <h3>Signature Style</h3>
+              <p id="chefModalStyle"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="chef-section">
+          <h3>Chef Journey</h3>
+          <p id="chefModalJourney"></p>
+        </div>
+
+        <div class="chef-section">
+          <h3>Special Dishes</h3>
+          <div class="chef-specials" id="chefModalSpecials"></div>
+        </div>
+
+        <div class="chef-section">
+          <h3>Achievements</h3>
+          <ul class="chef-list" id="chefModalAwards"></ul>
+        </div>
+
+        <div class="chef-section">
+          <h3>Kitchen Notes</h3>
+          <p id="chefModalNotes"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const chefModal = document.getElementById("chefModal");
+    const chefModalTitle = document.getElementById("chefModalTitle");
+    const chefModalTagline = document.getElementById("chefModalTagline");
+    const chefModalMeta = document.getElementById("chefModalMeta");
+    const chefModalBio = document.getElementById("chefModalBio");
+    const chefModalStyle = document.getElementById("chefModalStyle");
+    const chefModalJourney = document.getElementById("chefModalJourney");
+    const chefModalNotes = document.getElementById("chefModalNotes");
+    const chefModalAwards = document.getElementById("chefModalAwards");
+    const chefModalImage = document.getElementById("chefModalImage");
+    const chefModalSpecials = document.getElementById("chefModalSpecials");
+    const chefModalClose = document.getElementById("chefModalClose");
+    const chefScrollBtn = document.getElementById("chefScrollBtn");
+    const chefSheet = document.querySelector(".chef-sheet");
+    let autoScrollTimer = null;
+    let autoScrollActive = false;
+
+    const stopAutoScroll = () => {
+      if (autoScrollTimer) {
+        cancelAnimationFrame(autoScrollTimer);
+        autoScrollTimer = null;
+      }
+      autoScrollActive = false;
+      if (chefScrollBtn) chefScrollBtn.textContent = "Auto Scroll";
+    };
+
+    const stepScroll = () => {
+      if (!chefSheet) return;
+      if (!autoScrollActive) return;
+      chefSheet.scrollTop += 1;
+      if (chefSheet.scrollTop + chefSheet.clientHeight >= chefSheet.scrollHeight - 2) {
+        stopAutoScroll();
+        return;
+      }
+      autoScrollTimer = requestAnimationFrame(stepScroll);
+    };
+
+    const toggleAutoScroll = () => {
+      if (!chefSheet) return;
+      autoScrollActive = !autoScrollActive;
+      if (autoScrollActive) {
+        if (chefScrollBtn) chefScrollBtn.textContent = "Stop Scroll";
+        autoScrollTimer = requestAnimationFrame(stepScroll);
+      } else {
+        stopAutoScroll();
+      }
+    };
+
+    const chefProfiles = {
+      "Chef Aanya Rao": {
+        tagline: "Coastal South Indian artistry with a modern, silky finish.",
+        meta: ["Chennai, India", "Seafood & Coconut", "20+ Years"],
+        bio: "Chef Aanya blends the soul of Tamil coastal kitchens with refined plating. Her food is known for bright coconut aromas, layered spice, and gentle heat that builds slowly without overpowering the dish.",
+        style: "Lightly smoked seafood, tempered spice oils, and coconut-forward sauces. She prioritizes freshness and keeps the final plate glossy and aromatic.",
+        journey: "She began in her grandmother’s seaside kitchen, trained under a Chennai hotel chef, and later led coastal menus across boutique resorts. Her signature technique is balancing chilli heat with mellow coconut and curry leaf.",
+        notes: "Best tip: toast spices briefly before grinding to lock in aroma; finish curries with a splash of coconut milk and a squeeze of lime for lift.",
+        specials: ["Coconut Prawn Curry", "Pepper Crab Roast", "Malabar Fish Stew", "Raw Mango Puli Kuzhambu"],
+        awards: [
+          "Coastal Chef of the Year — South India Culinary Guild",
+          "Featured in “Seaside Flavors” Culinary Journal",
+          "Guest chef for Tamil Heritage Food Week"
+        ]
+      },
+      "Chef Mateo Cruz": {
+        tagline: "Latin fire, slow smoke, citrus-forward sauces.",
+        meta: ["Monterrey, Mexico", "Wood-Smoke & Citrus", "18+ Years"],
+        bio: "Chef Mateo’s plates are bold, smoky, and balanced with fresh citrus oils. He’s known for layered marinades and a finishing drizzle that makes each bite brighter.",
+        style: "Open-flame cooking, dry rubs, and zesty herb oils. His plating is vibrant with charred textures and high-contrast colors.",
+        journey: "He trained in family-owned taquerias, refined his style in smokehouses, and toured Latin America collecting spice blends. He now curates modern Latin menus for pop-up kitchens.",
+        notes: "Best tip: rest grilled meats with a citrus-herb glaze to keep them juicy; always add acid at the end for a clean finish.",
+        specials: ["Charred Lime Brisket", "Chipotle Citrus Tacos", "Smoked Corn Bisque", "Ancho Chili Short Rib"],
+        awards: [
+          "Latin Fire Award — Culinary Street Masters",
+          "Top 10 Smokehouse Chefs — Grill & Fire Magazine",
+          "Guest judge on “Flavors of Mexico”"
+        ]
+      },
+      "Chef Elise Laurent": {
+        tagline: "Parisian finesse with seasonal produce and refined sauces.",
+        meta: ["Lyon, France", "Classical French", "15+ Years"],
+        bio: "Chef Elise is a classically trained French chef with a delicate touch and a modern palate. Her plates are elegant, creamy, and balanced.",
+        style: "Silky reductions, herb butter finishes, and seasonal vegetables. She plates with precision and prefers clean, minimal garnish.",
+        journey: "She trained in Lyon, refined her techniques in Paris, and now leads a seasonal dining studio focused on comfort classics with a fine-dining edge.",
+        notes: "Best tip: keep sauces glossy by whisking in cold butter off-heat; season in layers for depth, not just at the end.",
+        specials: ["Truffle Mushroom Risotto", "Herb Butter Chicken", "Pear Tarte Tatin", "Roasted Shallot Velouté"],
+        awards: [
+          "Best Emerging Chef — Lyon Gastronomy Forum",
+          "Featured in “Modern French Classics”",
+          "Seasonal Menu Curator — Maison Atelier"
+        ]
+      },
+      "Chef Haruto Saito": {
+        tagline: "Minimalist Japanese technique with maximum umami.",
+        meta: ["Osaka, Japan", "Umami & Precision", "22+ Years"],
+        bio: "Chef Haruto’s cuisine is quiet, balanced, and deeply savory. He values clarity of flavor and thoughtful texture contrast.",
+        style: "Clean broths, precise grilling, and restrained seasoning. Every element is designed to highlight the ingredient’s natural umami.",
+        journey: "From Osaka izakayas to Tokyo kaiseki counters, he refined a minimalist approach. Today he teaches umami layering and modern Japanese plating.",
+        notes: "Best tip: build umami using dashi early, then finish with miso or soy for depth; avoid over-salting to keep flavors pure.",
+        specials: ["Miso Glazed Cod", "Sesame Soba Salad", "Umami Dashi Bowl", "Yuzu Soy Chicken"],
+        awards: [
+          "Kansai Culinary Excellence Award",
+          "Instructor — Osaka Umami Institute",
+          "Featured in “Pure Japanese Plates”"
+        ]
+      }
+    };
+
+    const openChefModal = (card) => {
+      if (!chefModal || !card) return;
+      const name = card.getAttribute("data-name") || "Chef";
+      const profile = chefProfiles[name];
+      const img = card.querySelector("img");
+
+      if (chefModalTitle) chefModalTitle.textContent = name;
+      if (chefModalTagline) chefModalTagline.textContent = profile?.tagline || "";
+      if (chefModalMeta) {
+        chefModalMeta.innerHTML = (profile?.meta || []).map((item) => `<span>${item}</span>`).join("");
+      }
+      if (chefModalBio) chefModalBio.textContent = profile?.bio || "";
+      if (chefModalStyle) chefModalStyle.textContent = profile?.style || "";
+      if (chefModalJourney) chefModalJourney.textContent = profile?.journey || "";
+      if (chefModalNotes) chefModalNotes.textContent = profile?.notes || "";
+      if (chefModalImage && img) {
+        chefModalImage.src = img.src;
+        chefModalImage.alt = name;
+      }
+      if (chefModalSpecials) {
+        chefModalSpecials.innerHTML = (profile?.specials || []).map((item) => `<span class="chef-special">${item}</span>`).join("");
+      }
+      if (chefModalAwards) {
+        chefModalAwards.innerHTML = (profile?.awards || []).map((item) => `<li>${item}</li>`).join("");
+      }
+      chefModal.classList.add("show");
+      chefModal.setAttribute("aria-hidden", "false");
+      if (chefSheet) chefSheet.scrollTop = 0;
+      stopAutoScroll();
+    };
+
+    const closeChefModal = () => {
+      if (!chefModal) return;
+      chefModal.classList.remove("show");
+      chefModal.setAttribute("aria-hidden", "true");
+      stopAutoScroll();
+    };
+
+    document.querySelectorAll(".chef-card").forEach((card) => {
+      card.addEventListener("click", () => openChefModal(card));
+    });
+
+    if (chefModalClose) {
+      chefModalClose.addEventListener("click", closeChefModal);
+    }
+    if (chefScrollBtn) {
+      chefScrollBtn.addEventListener("click", toggleAutoScroll);
+    }
+    if (chefModal) {
+      chefModal.addEventListener("click", (e) => {
+        if (e.target === chefModal) {
+          closeChefModal();
+        }
+      });
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeChefModal();
+      }
+    });
+  </script>
+  <script src="/footer.js"></script>
+</body>
+</html>
+

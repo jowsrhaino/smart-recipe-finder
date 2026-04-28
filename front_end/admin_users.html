@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Admin Users | Recipe Finder</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{
+  --gold-1:#f7d774;
+  --gold-2:#d4af37;
+  --ink:#080808;
+  --glass:rgba(255,255,255,0.075);
+  --glass-border:rgba(247,215,116,0.28);
+}
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(155deg,#050505,#0d0d0d 45%,#101010);
+  color:#fff;
+}
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,215,0,0.15), transparent 45%),
+    radial-gradient(circle at 82% 65%, rgba(255,190,0,0.1), transparent 45%),
+    radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 60%);
+}
+.wrap{
+  padding:34px 26px 42px;
+  max-width:1450px;
+  margin:0 auto;
+}
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.title-wrap{
+  display:grid;
+  gap:6px;
+}
+.top h1{
+  margin:0;
+  font-family:'Playfair Display',serif;
+  font-size:46px;
+  letter-spacing:.4px;
+  background:linear-gradient(125deg,#fff,var(--gold-1));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.top-note{
+  margin:0;
+  font-size:13px;
+  color:#d2d2d2;
+  opacity:.9;
+}
+.top-actions{display:flex;flex-wrap:wrap;gap:10px}
+.top-actions a{
+  text-decoration:none;
+  padding:11px 17px;
+  border-radius:999px;
+  color:#111;
+  background:linear-gradient(135deg,var(--gold-2),var(--gold-1));
+  font-weight:600;
+  box-shadow:0 10px 22px rgba(0,0,0,.32);
+}
+
+.cards{
+  margin-top:22px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:14px;
+}
+.card{
+  background:linear-gradient(150deg,var(--glass),rgba(255,255,255,0.04));
+  border:1px solid var(--glass-border);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 18px 36px rgba(0,0,0,.45);
+  border-color:rgba(247,215,116,.45);
+}
+.card p{margin:0 0 7px;color:#ddd;font-size:13px}
+.card h2{
+  margin:0;
+  color:#ffd96b;
+  font-size:34px;
+  line-height:1;
+}
+.card-note{
+  margin-top:8px;
+  font-size:12px;
+  color:#cfcfcf;
+  opacity:.85;
+}
+.card.clickable{
+  cursor:pointer;
+}
+
+.grid{
+  margin-top:22px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.panel{
+  background:linear-gradient(155deg,var(--glass),rgba(255,255,255,0.035));
+  border:1px solid var(--glass-border);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 12px 28px rgba(0,0,0,.32);
+}
+.panel h3{
+  margin:0 0 10px;
+  font-family:'Playfair Display',serif;
+  font-size:28px;
+  color:#ffe08d;
+}
+.panel p{margin:0 0 10px;color:#d4d4d4;font-size:13px}
+.panel input,.panel textarea,.panel select{
+  width:100%;
+  background:#111;
+  color:#fff;
+  border:1px solid rgba(255,215,0,0.25);
+  border-radius:10px;
+  padding:10px 12px;
+  margin-bottom:9px;
+}
+.panel textarea{min-height:90px;resize:vertical}
+.btn{
+  border:none;
+  border-radius:10px;
+  padding:10px 14px;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--gold-2),var(--gold-1));
+  color:#111;
+}
+.btn.secondary{
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,215,0,0.25);
+  color:#fff;
+}
+.btn.danger{
+  background:#ff4d4f;
+  color:#fff;
+}
+.status{
+  min-height:16px;
+  font-size:12px;
+  color:#e7e7e7;
+  margin-top:8px;
+}
+.plan-item{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:12px;
+  padding:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.plan-meta{
+  font-size:12px;
+  color:#d7d7d7;
+}
+.plan-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.list{
+  display:grid;
+  gap:10px;
+}
+.item{
+  background:rgba(255,255,255,0.045);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:14px;
+  padding:11px;
+  display:grid;
+  grid-template-columns:85px 1fr;
+  gap:10px;
+}
+.item img{
+  width:85px;
+  height:70px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid rgba(255,215,0,0.3);
+}
+.item h4{margin:0 0 4px;font-size:16px}
+.meta{font-size:12px;color:#cfcfcf}
+.tag{
+  display:inline-block;
+  margin-top:4px;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid rgba(255,215,0,0.45);
+  font-size:11px;
+}
+.inline-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:8px;
+}
+
+.user-table{
+  width:100%;
+  border-collapse:collapse;
+}
+.user-table th,.user-table td{
+  text-align:left;
+  font-size:13px;
+  padding:9px 8px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.user-search{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom:12px;
+}
+.user-search input{
+  flex:1;
+  background:#111;
+  color:#fff;
+  border:1px solid rgba(255,215,0,0.35);
+  border-radius:10px;
+  padding:10px 12px;
+}
+.user-table th{
+  color:#ffd700;
+  font-weight:600;
+}
+.recipes-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  z-index:999;
+}
+.recipes-modal.show{
+  display:flex;
+}
+.recipes-modal-card{
+  width:min(840px,100%);
+  max-height:88vh;
+  overflow:auto;
+  background:linear-gradient(165deg,#111,#151515);
+  border:1px solid rgba(255,215,0,.33);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 22px 50px rgba(0,0,0,.5);
+}
+.recipes-modal-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.recipes-modal-top h3{
+  margin:0;
+  font-family:'Playfair Display',serif;
+  font-size:30px;
+  color:#ffe08d;
+}
+.recipes-mini-list{
+  display:grid;
+  gap:10px;
+}
+.recipe-mini{
+  display:grid;
+  grid-template-columns:74px 1fr auto;
+  gap:10px;
+  align-items:center;
+  padding:8px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.04);
+}
+.recipe-mini img{
+  width:74px;
+  height:60px;
+  border-radius:8px;
+  object-fit:cover;
+  border:1px solid rgba(255,215,0,.32);
+}
+.recipe-mini strong{
+  display:block;
+  font-size:14px;
+}
+.recipe-mini span{
+  font-size:12px;
+  color:#ccc;
+}
+.recipe-mini-actions{
+  display:flex;
+  gap:7px;
+}
+.mini-btn{
+  border:none;
+  border-radius:8px;
+  padding:7px 10px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:600;
+}
+.mini-btn.edit{
+  background:linear-gradient(135deg,var(--gold-2),var(--gold-1));
+  color:#111;
+}
+.mini-btn.delete{
+  background:#ff4d4f;
+  color:#fff;
+}
+.recipe-edit-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.77);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:1001;
+}
+.recipe-edit-modal.show{
+  display:flex;
+}
+.recipe-edit-card{
+  width:min(760px,100%);
+  max-height:90vh;
+  overflow:auto;
+  border-radius:16px;
+  background:linear-gradient(160deg,#101010,#171717);
+  border:1px solid rgba(255,215,0,.35);
+  padding:14px;
+}
+.recipe-edit-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
+}
+.recipe-edit-top h3{
+  margin:0;
+  font-family:'Playfair Display',serif;
+  font-size:30px;
+  color:#ffe08d;
+}
+.recipe-edit-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.recipe-edit-grid input,
+.recipe-edit-grid select,
+.recipe-edit-grid textarea{
+  width:100%;
+  background:#111;
+  color:#fff;
+  border:1px solid rgba(255,215,0,.25);
+  border-radius:10px;
+  padding:10px 12px;
+}
+.recipe-edit-grid textarea{
+  min-height:130px;
+  grid-column:1 / -1;
+}
+.edit-status{
+  min-height:16px;
+  font-size:12px;
+  margin-top:8px;
+  color:#ddd;
+}
+.users-grid{
+  grid-template-columns:1fr;
+}
+
+@media (max-width:1100px){
+  .grid{grid-template-columns:1fr}
+  .recipe-mini{
+    grid-template-columns:74px 1fr;
+  }
+  .recipe-mini-actions{
+    grid-column:1 / -1;
+  }
+  .recipe-edit-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:760px){
+  .wrap{
+    padding:18px 12px 24px;
+  }
+  .top h1{
+    font-size:34px;
+  }
+  .top-note{
+    font-size:12px;
+  }
+  .top-actions{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .top-actions a{
+    text-align:center;
+    padding:10px 12px;
+    font-size:13px;
+  }
+  .cards{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .card{
+    padding:14px;
+    border-radius:14px;
+  }
+  .card h2{
+    font-size:28px;
+  }
+  .panel{
+    padding:12px;
+    border-radius:14px;
+  }
+  .panel h3{
+    font-size:22px;
+  }
+  .item{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .item img{
+    width:100%;
+    height:170px;
+  }
+  .inline-actions{
+    gap:6px;
+  }
+  .inline-actions .btn{
+    flex:1 1 auto;
+    min-width:110px;
+  }
+  .recipes-modal,
+  .recipe-edit-modal{
+    padding:10px;
+  }
+  .recipes-modal-card,
+  .recipe-edit-card{
+    border-radius:14px;
+    padding:12px;
+  }
+  .recipe-mini{
+    grid-template-columns:1fr;
+  }
+  .recipe-mini img{
+    width:100%;
+    height:140px;
+  }
+  .recipe-mini-actions{
+    grid-column:auto;
+  }
+  .user-table thead{
+    display:none;
+  }
+  .user-table,
+  .user-table tbody,
+  .user-table tr,
+  .user-table td{
+    display:block;
+    width:100%;
+  }
+  .user-table tr{
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:12px;
+    padding:8px 10px;
+    margin-bottom:10px;
+    background:rgba(255,255,255,0.04);
+  }
+  .user-table td{
+    border-bottom:none;
+    padding:6px 0;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    font-size:12px;
+  }
+  .user-table td::before{
+    color:#ffd700;
+    font-weight:600;
+    min-width:80px;
+  }
+  .user-table td:nth-child(1)::before{content:"Name";}
+  .user-table td:nth-child(2)::before{content:"Email";}
+  .user-table td:nth-child(3)::before{content:"Premium";}
+  .user-table td:nth-child(4)::before{content:"Status";}
+  .user-table td:nth-child(5)::before{content:"Plan";}
+  .user-table td:nth-child(6)::before{content:"Expires";}
+  .user-table td:nth-child(7)::before{content:"Action";}
+  .user-table td:last-child{
+    display:block;
+    padding-top:8px;
+  }
+  .user-table td:last-child .btn{
+    width:100%;
+    margin:0 0 6px;
+  }
+}
+
+@media (max-width:480px){
+  .top-actions{
+    grid-template-columns:1fr;
+  }
+  .cards{
+    grid-template-columns:1fr;
+  }
+  .top h1{
+    font-size:30px;
+  }
+}
+
+body[data-page="users"] .cards,
+body[data-page="users"] .grid:not(.users-grid),
+body[data-page="users"] .recipes-modal,
+body[data-page="users"] .recipe-edit-modal{
+  display:none;
+}
+</style>
+</head>
+<body data-page="users">
+<div class="bg"></div>
+
+<main class="wrap">
+  <div class="top">
+    <div class="title-wrap">
+      <h1>Users</h1>
+      <p class="top-note">Manage premium access, status, and user details.</p>
+    </div>
+    <div class="top-actions">
+      <a href="/admin">Back to Dashboard</a>
+      <a href="/recipes">Open Recipes</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+
+  <section class="cards">
+    <article class="card">
+      <p>Total Users</p>
+      <h2 id="totalUsers">0</h2>
+    </article>
+    <article class="card clickable" id="totalRecipesCard" title="View recipe list">
+      <p>Total Recipes</p>
+      <h2 id="totalRecipes">0</h2>
+      <div class="card-note">Click to view dish names + images</div>
+    </article>
+    <article class="card">
+      <p>Pending Verification</p>
+      <h2 id="pendingRecipes">0</h2>
+    </article>
+    <article class="card">
+      <p>Premium Users</p>
+      <h2 id="premiumUsers">0</h2>
+    </article>
+  </section>
+
+  <section class="grid">
+    <article class="panel">
+      <h3>Pending Recipes</h3>
+      <p>User submitted recipes. Run AI verify, then approve or reject.</p>
+      <div id="pendingList" class="list"></div>
+    </article>
+
+    <article class="panel">
+      <h3>Admin Notification</h3>
+      <p>Send update mail to all registered users.</p>
+      <input id="notifySubject" type="text" placeholder="Notification subject">
+      <textarea id="notifyMessage" placeholder="Notification message"></textarea>
+      <button id="notifyBtn" class="btn" type="button">Send To All Users</button>
+      <p id="notifyStatus" class="status"></p>
+
+      <hr style="border-color:rgba(255,215,0,.18); margin:14px 0;">
+      <h3 style="font-size:24px;">Premium Plan Settings</h3>
+      <p>Add multiple premium plans. Users get premium only after payment + admin grant.</p>
+      <input id="premiumPlanNameInput" type="text" placeholder="Plan Name">
+      <input id="premiumAmountInput" type="number" min="1" step="0.01" placeholder="Amount">
+      <input id="premiumCurrencyInput" type="text" maxlength="6" placeholder="Currency (e.g., INR)">
+      <input id="premiumDurationInput" type="text" placeholder="Duration (e.g., 30d or 12h)">
+      <div class="inline-actions">
+        <button id="addPremiumPlanBtn" class="btn secondary" type="button">Add Plan</button>
+        <button id="savePremiumSettingsBtn" class="btn" type="button">Save Plans</button>
+      </div>
+      <div id="premiumPlansList" class="list" style="margin-top:10px;"></div>
+      <p id="premiumSettingsStatus" class="status"></p>
+    </article>
+  </section>
+
+  <section class="grid users-grid">
+    <article class="panel">
+      <h3>User List & Premium Manage</h3>
+      <p>Grant or revoke premium access for any user.</p>
+      <div class="user-search">
+        <input id="userSearchInput" type="text" placeholder="Search users by name or email">
+      </div>
+      <div style="overflow:auto;">
+        <table class="user-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Premium</th>
+              <th>Status</th>
+              <th>Plan</th>
+              <th>Expires</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</main>
+
+<div class="recipes-modal" id="recipesModal">
+  <div class="recipes-modal-card">
+    <div class="recipes-modal-top">
+      <h3>DB Recipe List</h3>
+      <button class="btn secondary" id="closeRecipesModal" type="button">Close</button>
+    </div>
+    <div id="recipesModalList" class="recipes-mini-list"></div>
+  </div>
+</div>
+
+<div class="recipe-edit-modal" id="recipeEditModal">
+  <div class="recipe-edit-card">
+    <div class="recipe-edit-top">
+      <h3>Edit Recipe</h3>
+      <button class="btn secondary" id="closeRecipeEditModal" type="button">Close</button>
+    </div>
+    <div class="recipe-edit-grid">
+      <input id="editRecipeTitle" type="text" placeholder="Title">
+      <select id="editRecipeCategory">
+        <option>Breakfast</option>
+        <option>Lunch</option>
+        <option>Dinner</option>
+        <option>Snacks</option>
+        <option>Side Dish</option>
+      </select>
+      <select id="editRecipeCuisine">
+        <option>Indian</option>
+        <option>Chinese</option>
+        <option>Italian</option>
+        <option>Continental</option>
+      </select>
+      <input id="editRecipeServes" type="number" min="1" step="1" placeholder="Base Serves">
+      <input id="editRecipeYoutube" type="url" placeholder="YouTube Link (optional)" style="grid-column:1 / -1;">
+      <textarea id="editRecipeInstructions" placeholder="Instructions"></textarea>
+    </div>
+    <div class="inline-actions" style="margin-top:10px;">
+      <button class="btn" id="saveRecipeEditBtn" type="button">Save Changes</button>
+      <button class="btn secondary" id="cancelRecipeEditBtn" type="button">Cancel</button>
+    </div>
+    <p id="recipeEditStatus" class="edit-status"></p>
+  </div>
+</div>
+
+<script>
+function resolveImage(image, title) {
+  const src = (image || "").trim();
+  if (!src) {
+    return `https://source.unsplash.com/featured/?${encodeURIComponent(title || "recipe")}`;
+  }
+  if (src.startsWith("http")) {
+    return src;
+  }
+  return `/uploads/${src}`;
+}
+
+async function fetchJson(url, options) {
+  const res = await fetch(url, options);
+  let data = {};
+  try {
+    data = await res.json();
+  } catch {
+    data = {};
+  }
+  if (!res.ok) {
+    throw new Error(data.message || "Request failed");
+  }
+  return data;
+}
+
+let allRecipesCache = [];
+let activeEditRecipeId = "";
+let allUsersCache = [];
+const userSearchInput = document.getElementById("userSearchInput");
+const premiumAmountInput = document.getElementById("premiumAmountInput");
+const premiumCurrencyInput = document.getElementById("premiumCurrencyInput");
+const premiumPlanNameInput = document.getElementById("premiumPlanNameInput");
+const premiumDurationInput = document.getElementById("premiumDurationInput");
+const addPremiumPlanBtn = document.getElementById("addPremiumPlanBtn");
+const premiumPlansList = document.getElementById("premiumPlansList");
+const premiumSettingsStatus = document.getElementById("premiumSettingsStatus");
+let premiumPlansCache = [];
+let premiumDefaultPlanId = "";
+const MIN_PREMIUM_DURATION_DAYS = 1 / 24;
+
+function setPremiumSettingsStatus(message) {
+  premiumSettingsStatus.textContent = message || "";
+}
+
+function normalizePlanId(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+function parsePlanDurationToDays(value) {
+  const text = String(value || "").trim().toLowerCase();
+  if (!text) {
+    return { ok: false, error: "Plan duration is required." };
+  }
+  const match = text.match(/^(\d+(?:\.\d+)?)\s*(d|day|days|h|hr|hrs|hour|hours)?$/i);
+  if (!match) {
+    return { ok: false, error: "Use duration like 30d or 12h." };
+  }
+  const amount = Number(match[1]);
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return { ok: false, error: "Plan duration must be a positive value." };
+  }
+  const unit = String(match[2] || "d").toLowerCase();
+  const days = unit.startsWith("h") ? (amount / 24) : amount;
+  if (!Number.isFinite(days) || days < MIN_PREMIUM_DURATION_DAYS) {
+    return { ok: false, error: "Minimum premium duration is 1 hour." };
+  }
+  return { ok: true, days: Math.round(days * 1000000) / 1000000 };
+}
+
+function formatPlanDuration(durationDays) {
+  const days = Number(durationDays);
+  if (!Number.isFinite(days) || days <= 0) {
+    return "-";
+  }
+  const hours = days * 24;
+  const roundedHours = Math.round(hours * 100) / 100;
+  const roundedDays = Math.round(days * 100) / 100;
+  if (roundedHours < 24) {
+    return `${roundedHours} hour${roundedHours === 1 ? "" : "s"}`;
+  }
+  if (Number.isInteger(roundedDays)) {
+    return `${roundedDays} day${roundedDays === 1 ? "" : "s"}`;
+  }
+  return `${roundedDays} days`;
+}
+
+function renderPremiumPlans() {
+  if (!Array.isArray(premiumPlansCache) || !premiumPlansCache.length) {
+    premiumPlansList.innerHTML = "<div class='meta'>No plans added.</div>";
+    return;
+  }
+  premiumPlansList.innerHTML = "";
+  premiumPlansCache.forEach((plan) => {
+    const item = document.createElement("div");
+    item.className = "plan-item";
+    const isDefault = String(plan.id) === String(premiumDefaultPlanId);
+    const oneTimeTag = plan.oneTimePerUser ? " | one-time per user" : "";
+    item.innerHTML = `
+      <div>
+        <strong>${plan.name}</strong>
+        <div class="plan-meta">${plan.amount} ${plan.currency} | ${formatPlanDuration(plan.durationDays)}${oneTimeTag} | id: ${plan.id}</div>
+      </div>
+      <div class="plan-actions">
+        <button class="btn secondary default-btn" type="button">${isDefault ? "Default" : "Set Default"}</button>
+        <button class="btn danger remove-btn" type="button">Remove</button>
+      </div>
+    `;
+    const defaultBtn = item.querySelector(".default-btn");
+    defaultBtn.disabled = isDefault;
+    defaultBtn.addEventListener("click", () => {
+      premiumDefaultPlanId = plan.id;
+      renderPremiumPlans();
+    });
+    item.querySelector(".remove-btn").addEventListener("click", () => {
+      premiumPlansCache = premiumPlansCache.filter((entry) => String(entry.id) !== String(plan.id));
+      if (!premiumPlansCache.some((entry) => String(entry.id) === String(premiumDefaultPlanId))) {
+        premiumDefaultPlanId = premiumPlansCache[0] ? premiumPlansCache[0].id : "";
+      }
+      renderPremiumPlans();
+    });
+    premiumPlansList.appendChild(item);
+  });
+}
+
+function addPremiumPlanDraft() {
+  const name = (premiumPlanNameInput.value || "").trim();
+  const amount = Number(premiumAmountInput.value || 0);
+  const currency = (premiumCurrencyInput.value || "").trim().toUpperCase() || "INR";
+  const durationResult = parsePlanDurationToDays(premiumDurationInput.value);
+  if (!name) {
+    setPremiumSettingsStatus("Plan name is required.");
+    return;
+  }
+  if (!amount || amount <= 0) {
+    setPremiumSettingsStatus("Plan amount must be a positive number.");
+    return;
+  }
+  if (!durationResult.ok) {
+    setPremiumSettingsStatus(durationResult.error || "Invalid plan duration.");
+    return;
+  }
+  const durationDays = Number(durationResult.days);
+
+  let id = normalizePlanId(name);
+  if (!id) {
+    id = `plan_${Date.now()}`;
+  }
+  let attempt = 1;
+  while (premiumPlansCache.some((plan) => String(plan.id) === id)) {
+    attempt += 1;
+    id = `${id}_${attempt}`;
+  }
+
+  premiumPlansCache.push({
+    id,
+    name,
+    amount: Math.round(amount * 100) / 100,
+    currency,
+    durationDays,
+    oneTimePerUser: String(`${id} ${name}`).toLowerCase().includes("test")
+  });
+  if (!premiumDefaultPlanId) {
+    premiumDefaultPlanId = id;
+  }
+  premiumPlanNameInput.value = "";
+  premiumAmountInput.value = "";
+  premiumCurrencyInput.value = "INR";
+  premiumDurationInput.value = "";
+  setPremiumSettingsStatus("Plan added locally. Click Save Plans to apply.");
+  renderPremiumPlans();
+}
+
+async function loadPremiumSettings() {
+  try {
+    const settings = await fetchJson("/admin/premium-settings");
+    const plans = Array.isArray(settings.plans) ? settings.plans : [];
+    premiumPlansCache = plans.map((plan) => ({
+      id: String(plan.id || "").trim(),
+      name: String(plan.name || "").trim(),
+      amount: Number(plan.amount) || 0,
+      currency: String(plan.currency || "").trim().toUpperCase(),
+      durationDays: Number(plan.durationDays) || 0,
+      oneTimePerUser: Boolean(plan.oneTimePerUser)
+    })).filter((plan) => plan.id && plan.name && plan.amount > 0 && plan.durationDays > 0);
+    premiumDefaultPlanId = settings.defaultPlanId || (premiumPlansCache[0] ? premiumPlansCache[0].id : "");
+    premiumCurrencyInput.value = "INR";
+    renderPremiumPlans();
+    setPremiumSettingsStatus("");
+  } catch (err) {
+    setPremiumSettingsStatus(err.message || "Failed to load premium settings.");
+  }
+}
+
+async function savePremiumSettings() {
+  const userRole = (localStorage.getItem("userRole") || "").trim().toLowerCase();
+  const adminEmail = (localStorage.getItem("userEmail") || "").trim().toLowerCase();
+  if (!premiumPlansCache.length) {
+    setPremiumSettingsStatus("Add at least one premium plan before saving.");
+    return;
+  }
+  if (userRole && userRole !== "admin") {
+    setPremiumSettingsStatus("Only admin account can save premium settings.");
+    return;
+  }
+  if (!adminEmail) {
+    setPremiumSettingsStatus("Admin login required.");
+    return;
+  }
+
+  setPremiumSettingsStatus("Saving premium settings...");
+  try {
+    const data = await fetchJson("/admin/premium-settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        adminEmail,
+        plans: premiumPlansCache,
+        defaultPlanId: premiumDefaultPlanId || premiumPlansCache[0].id
+      })
+    });
+    const updated = data.settings || {};
+    premiumPlansCache = Array.isArray(updated.plans) ? updated.plans : premiumPlansCache;
+    premiumDefaultPlanId = updated.defaultPlanId || premiumDefaultPlanId || (premiumPlansCache[0] ? premiumPlansCache[0].id : "");
+    renderPremiumPlans();
+    setPremiumSettingsStatus("Premium settings updated.");
+  } catch (err) {
+    setPremiumSettingsStatus(err.message || "Failed to save premium settings.");
+  }
+}
+
+function setRecipeEditStatus(message) {
+  document.getElementById("recipeEditStatus").textContent = message || "";
+}
+
+function openRecipeEditModal(recipe) {
+  if (!recipe || !recipe._id) {
+    return;
+  }
+  activeEditRecipeId = recipe._id;
+  document.getElementById("editRecipeTitle").value = recipe.title || "";
+  document.getElementById("editRecipeCategory").value = recipe.category || "Breakfast";
+  document.getElementById("editRecipeCuisine").value = recipe.cuisine || "Indian";
+  document.getElementById("editRecipeServes").value = Number(recipe.baseServes) || 1;
+  document.getElementById("editRecipeYoutube").value = recipe.youtube || "";
+  document.getElementById("editRecipeInstructions").value = recipe.instructions || "";
+  setRecipeEditStatus("");
+  document.getElementById("recipeEditModal").classList.add("show");
+}
+
+function closeRecipeEditModal() {
+  activeEditRecipeId = "";
+  document.getElementById("recipeEditModal").classList.remove("show");
+  setRecipeEditStatus("");
+}
+
+async function saveRecipeEdit() {
+  if (!activeEditRecipeId) {
+    return;
+  }
+  const payload = {
+    title: (document.getElementById("editRecipeTitle").value || "").trim(),
+    category: (document.getElementById("editRecipeCategory").value || "").trim(),
+    cuisine: (document.getElementById("editRecipeCuisine").value || "").trim(),
+    baseServes: Number(document.getElementById("editRecipeServes").value || 1),
+    youtube: (document.getElementById("editRecipeYoutube").value || "").trim(),
+    instructions: (document.getElementById("editRecipeInstructions").value || "").trim()
+  };
+
+  if (!payload.title || !payload.category || !payload.cuisine || !payload.instructions) {
+    setRecipeEditStatus("Title, category, cuisine, instructions required.");
+    return;
+  }
+
+  setRecipeEditStatus("Saving recipe changes...");
+  try {
+    await fetchJson(`/admin/recipes/${activeEditRecipeId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    setRecipeEditStatus("Recipe updated.");
+    await Promise.all([loadDashboard(), loadPendingRecipes(), loadAllRecipes()]);
+    closeRecipeEditModal();
+  } catch (err) {
+    setRecipeEditStatus(err.message || "Failed to update recipe.");
+  }
+}
+
+async function deleteRecipeFromModal(recipe) {
+  if (!recipe || !recipe._id) {
+    return;
+  }
+  const ok = confirm(`Delete "${recipe.title || "recipe"}"?`);
+  if (!ok) {
+    return;
+  }
+  try {
+    await fetchJson(`/admin/recipes/${recipe._id}`, { method: "DELETE" });
+    await Promise.all([loadDashboard(), loadPendingRecipes(), loadAllRecipes()]);
+  } catch (err) {
+    alert(err.message || "Delete failed.");
+  }
+}
+
+function renderRecipeModalList(recipes) {
+  const modalList = document.getElementById("recipesModalList");
+  if (!Array.isArray(recipes) || recipes.length === 0) {
+    modalList.innerHTML = "<div class='meta'>No recipes found in DB.</div>";
+    return;
+  }
+  modalList.innerHTML = "";
+  recipes.forEach((recipe) => {
+    const row = document.createElement("div");
+    row.className = "recipe-mini";
+    row.innerHTML = `
+      <img src="${resolveImage(recipe.image, recipe.title)}" alt="${recipe.title || "Recipe"}">
+      <div>
+        <strong>${recipe.title || "Recipe"}</strong>
+        <span>${recipe.category || "N/A"} | ${recipe.cuisine || "N/A"} | ${recipe.status || "approved"}</span>
+      </div>
+      <div class="recipe-mini-actions">
+        <button class="mini-btn edit" type="button">Edit</button>
+        <button class="mini-btn delete" type="button">Delete</button>
+      </div>
+    `;
+    row.querySelector(".mini-btn.edit").addEventListener("click", () => {
+      openRecipeEditModal(recipe);
+    });
+    row.querySelector(".mini-btn.delete").addEventListener("click", () => {
+      deleteRecipeFromModal(recipe);
+    });
+    modalList.appendChild(row);
+  });
+}
+
+function openRecipesModal() {
+  const modal = document.getElementById("recipesModal");
+  renderRecipeModalList(allRecipesCache);
+  modal.classList.add("show");
+}
+
+function closeRecipesModal() {
+  document.getElementById("recipesModal").classList.remove("show");
+}
+
+function createPendingCard(recipe) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "item";
+  wrapper.innerHTML = `
+    <img src="${resolveImage(recipe.image, recipe.title)}" alt="${recipe.title || "Recipe"}">
+    <div>
+      <h4>${recipe.title || "Recipe"}</h4>
+      <div class="meta">By: ${(recipe.submittedByName || "User")} (${(recipe.submittedByEmail || "N/A")})</div>
+      <div class="meta">${recipe.category || "N/A"} | ${recipe.cuisine || "N/A"}</div>
+      <span class="tag">${recipe.status || "pending"}</span>
+      <textarea class="note-input" placeholder="Admin note (optional)"></textarea>
+      <div class="inline-actions">
+        <button class="btn secondary ai-btn" type="button">AI Verify</button>
+        <button class="btn approve-btn" type="button">Approve</button>
+        <button class="btn danger reject-btn" type="button">Reject</button>
+      </div>
+      <div class="status ai-status"></div>
+    </div>
+  `;
+
+  const aiStatus = wrapper.querySelector(".ai-status");
+  const noteInput = wrapper.querySelector(".note-input");
+
+  wrapper.querySelector(".ai-btn").addEventListener("click", async () => {
+    aiStatus.textContent = "Running AI verification...";
+    try {
+      const data = await fetchJson(`/admin/submitted-recipes/${recipe._id}/ai-review`, {
+        method: "POST"
+      });
+      const review = data.aiReview || {};
+      const issues = Array.isArray(review.issues) && review.issues.length
+        ? ` Issues: ${review.issues.join(" | ")}`
+        : "";
+      aiStatus.textContent = `AI: ${review.decision || "review"} | Score: ${review.score || 0}. ${review.summary || ""}${issues}`;
+    } catch (err) {
+      aiStatus.textContent = err.message || "AI verify failed.";
+    }
+  });
+
+  async function sendDecision(status) {
+    aiStatus.textContent = `${status === "approved" ? "Approving" : "Rejecting"} recipe...`;
+    try {
+      const adminEmail = (localStorage.getItem("userEmail") || "admin@gmail.com").trim().toLowerCase();
+      await fetchJson(`/admin/submitted-recipes/${recipe._id}/decision`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status,
+          note: noteInput.value || "",
+          verifiedBy: adminEmail
+        })
+      });
+      aiStatus.textContent = `Recipe ${status}.`;
+      await Promise.all([loadDashboard(), loadPendingRecipes(), loadAllRecipes()]);
+    } catch (err) {
+      aiStatus.textContent = err.message || "Decision failed.";
+    }
+  }
+
+  wrapper.querySelector(".approve-btn").addEventListener("click", () => sendDecision("approved"));
+  wrapper.querySelector(".reject-btn").addEventListener("click", () => sendDecision("rejected"));
+  return wrapper;
+}
+
+async function loadDashboard() {
+  try {
+    const data = await fetchJson("/admin/dashboard-data");
+    document.getElementById("totalUsers").textContent = data.totalUsers || 0;
+    document.getElementById("totalRecipes").textContent = data.totalRecipes || 0;
+    document.getElementById("pendingRecipes").textContent = data.totalPendingRecipes || 0;
+    document.getElementById("premiumUsers").textContent = data.totalPremiumUsers || 0;
+  } catch (err) {
+    document.getElementById("totalUsers").textContent = "0";
+    document.getElementById("totalRecipes").textContent = "0";
+    document.getElementById("pendingRecipes").textContent = "0";
+    document.getElementById("premiumUsers").textContent = "0";
+    console.error("Dashboard load failed:", err);
+  }
+}
+
+async function loadPendingRecipes() {
+  const container = document.getElementById("pendingList");
+  container.innerHTML = "Loading...";
+  try {
+    const recipes = await fetchJson("/admin/submitted-recipes?status=pending");
+    if (!Array.isArray(recipes) || recipes.length === 0) {
+      container.innerHTML = "<div class='meta'>No pending recipes.</div>";
+      return;
+    }
+    container.innerHTML = "";
+    recipes.forEach((recipe) => {
+      container.appendChild(createPendingCard(recipe));
+    });
+  } catch (err) {
+    container.innerHTML = `<div class='meta'>${err.message || "Failed to load pending recipes."}</div>`;
+  }
+}
+
+async function loadAllRecipes() {
+  try {
+    const recipes = await fetchJson("/api/recipes?all=true");
+    allRecipesCache = Array.isArray(recipes) ? recipes : [];
+    renderRecipeModalList(allRecipesCache);
+  } catch (err) {
+    allRecipesCache = [];
+    renderRecipeModalList([]);
+    console.error("Recipes load failed:", err);
+  }
+}
+
+async function loadUsers() {
+  const body = document.getElementById("usersTableBody");
+  body.innerHTML = "<tr><td colspan='7'>Loading...</td></tr>";
+  try {
+    const users = await fetchJson("/admin/users");
+    allUsersCache = Array.isArray(users) ? users.filter((user) => !isAdminUser(user)) : [];
+    renderUsersTable(filterUsers(allUsersCache));
+  } catch (err) {
+    body.innerHTML = `<tr><td colspan='7'>${err.message || "Failed to load users."}</td></tr>`;
+  }
+}
+
+function isAdminUser(user) {
+  const email = String(user?.email || "").trim().toLowerCase();
+  const blockedAdmins = ["admin@gmail.com", "hamethanasren@gmail.com"];
+  return blockedAdmins.includes(email);
+}
+
+function filterUsers(users) {
+  const query = (userSearchInput?.value || "").trim().toLowerCase();
+  if (!query) {
+    return users;
+  }
+  return users.filter((user) => {
+    const name = String(user?.name || "").toLowerCase();
+    const email = String(user?.email || "").toLowerCase();
+    return name.includes(query) || email.includes(query);
+  });
+}
+
+function renderUsersTable(users) {
+  const body = document.getElementById("usersTableBody");
+  if (!Array.isArray(users) || users.length === 0) {
+    body.innerHTML = "<tr><td colspan='7'>No users found.</td></tr>";
+    return;
+  }
+  body.innerHTML = "";
+  users.forEach((user) => {
+    const premiumActive = Boolean(user.premium);
+    const premiumPending = Boolean(user.premiumPendingApproval);
+    const status = premiumActive
+      ? "active"
+      : premiumPending
+        ? "pending approval"
+        : (user.premiumStatus || "none");
+    const plan = user.premiumPlanName || "-";
+    const expiresText = user.premiumExpiresAt
+      ? new Date(user.premiumExpiresAt).toLocaleString()
+      : "-";
+    const buttonLabel = premiumActive ? "Revoke" : "Grant";
+    const adminEmail = (localStorage.getItem("userEmail") || "admin@gmail.com").trim().toLowerCase();
+    const canDeleteUser = !Boolean(user.isAdmin);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${user.name || "-"}</td>
+      <td>${user.email || "-"}</td>
+      <td>${premiumActive ? "Yes" : "No"}</td>
+      <td>${status}</td>
+      <td>${plan}</td>
+      <td>${expiresText}</td>
+      <td>
+        <button class="btn secondary premium-btn" type="button">
+          ${buttonLabel}
+        </button>
+        ${canDeleteUser ? `<button class="btn danger remove-user-btn" type="button" style="margin-left:6px;">Remove</button>` : ""}
+      </td>
+    `;
+    tr.querySelector(".premium-btn").addEventListener("click", async () => {
+      try {
+        const nextPremiumState = !premiumActive;
+        const payload = {
+          premium: nextPremiumState,
+          verifiedBy: adminEmail
+        };
+
+        await fetchJson(`/admin/users/${user._id}/premium`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        await Promise.all([loadUsers(), loadDashboard()]);
+      } catch (err) {
+        alert(err.message || "Failed to update premium.");
+      }
+    });
+    if (canDeleteUser) {
+      const removeBtn = tr.querySelector(".remove-user-btn");
+      removeBtn.addEventListener("click", async () => {
+        const userLabel = user.email || user.name || "this user";
+        const ok = confirm(`Remove user ${userLabel}? This cannot be undone.`);
+        if (!ok) {
+          return;
+        }
+        try {
+          await fetchJson(`/admin/users/${user._id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ adminEmail })
+          });
+          await Promise.all([loadUsers(), loadDashboard()]);
+        } catch (err) {
+          alert(err.message || "Failed to remove user.");
+        }
+      });
+    }
+    body.appendChild(tr);
+  });
+}
+
+document.getElementById("notifyBtn").addEventListener("click", async () => {
+  const subject = (document.getElementById("notifySubject").value || "").trim();
+  const message = (document.getElementById("notifyMessage").value || "").trim();
+  const status = document.getElementById("notifyStatus");
+  if (!subject || !message) {
+    status.textContent = "Subject and message are required.";
+    return;
+  }
+  status.textContent = "Sending notification...";
+  try {
+    const data = await fetchJson("/admin/notifications/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subject, message })
+    });
+    status.textContent = `Sent: ${data.sent || 0}, Failed: ${data.failed || 0}, Total: ${data.totalRecipients || 0}.`;
+  } catch (err) {
+    status.textContent = err.message || "Failed to send notification.";
+  }
+});
+document.getElementById("addPremiumPlanBtn").addEventListener("click", addPremiumPlanDraft);
+document.getElementById("savePremiumSettingsBtn").addEventListener("click", savePremiumSettings);
+
+document.getElementById("totalRecipesCard").addEventListener("click", async () => {
+  if (!allRecipesCache.length) {
+    await loadAllRecipes();
+  }
+  openRecipesModal();
+});
+document.getElementById("closeRecipesModal").addEventListener("click", closeRecipesModal);
+document.getElementById("recipesModal").addEventListener("click", (e) => {
+  if (e.target.id === "recipesModal") {
+    closeRecipesModal();
+  }
+});
+document.getElementById("saveRecipeEditBtn").addEventListener("click", saveRecipeEdit);
+document.getElementById("cancelRecipeEditBtn").addEventListener("click", closeRecipeEditModal);
+document.getElementById("closeRecipeEditModal").addEventListener("click", closeRecipeEditModal);
+document.getElementById("recipeEditModal").addEventListener("click", (e) => {
+  if (e.target.id === "recipeEditModal") {
+    closeRecipeEditModal();
+  }
+});
+if (userSearchInput) {
+  userSearchInput.addEventListener("input", () => {
+    renderUsersTable(filterUsers(allUsersCache));
+  });
+}
+
+Promise.all([loadDashboard(), loadPendingRecipes(), loadAllRecipes(), loadUsers(), loadPremiumSettings()]).catch((err) => {
+  console.error("Admin page initialization error:", err);
+});
+</script>
+<script src="/footer.js"></script>
+</body>
+</html>
+

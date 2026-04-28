@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Watch | Recipe Finder</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    .watch-wrap{
+      padding:80px 120px 90px;
+    }
+    .watch-header h2{
+      font-family:'Playfair Display',serif;
+      font-size:56px;
+      line-height:1.05;
+    }
+    .watch-header p{
+      margin-top:14px;
+      color:#d4d4d4;
+      font-size:18px;
+    }
+    .watch-search{
+      margin-top:26px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .watch-search input{
+      flex:1;
+      min-width:260px;
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid rgba(255,215,0,0.35);
+      background:rgba(255,255,255,0.08);
+      color:#fff;
+      outline:none;
+    }
+    .watch-search button{
+      padding:12px 26px;
+      border-radius:999px;
+      border:none;
+      background:linear-gradient(135deg,#d4af37,#f7e27a);
+      color:#111;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .watch-search a{
+      padding:12px 22px;
+      border-radius:999px;
+      border:1px solid rgba(255,215,0,0.35);
+      background:rgba(255,255,255,0.08);
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .watch-player{
+      margin-top:30px;
+      border-radius:24px;
+      overflow:hidden;
+      border:1px solid rgba(255,215,0,0.35);
+      background:#111;
+    }
+    .watch-player iframe{
+      width:100%;
+      height:480px;
+      border:none;
+    }
+    @media(max-width:900px){
+      .watch-wrap{padding:60px 30px 70px}
+      .watch-header h2{font-size:44px}
+      .watch-player iframe{height:320px}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gold"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-smoke"></div>
+  <div class="gold-particles"></div>
+
+  <header class="navbar">
+    <h1>🍽 Recipe Finder</h1>
+    <nav>
+      <a href="/user">Home</a>
+      <a href="/recipes">Recipes</a>
+      <a href="/user/add-recipe">Add Recipe</a>
+      <a href="/chefs">Chefs</a>
+      <a href="/contact">Contact</a>
+      <a href="/premium" class="nav-btn">Premium</a>
+    </nav>
+  </header>
+
+  <main class="watch-wrap">
+    <section class="watch-header">
+      <h2>Watch the Magic in Motion</h2>
+      <p>Search for any dish and watch chefs bring it to life.</p>
+      <div class="watch-search">
+        <input id="watchSearch" type="text" placeholder="Search: biryani, sushi, tiramisu...">
+        <button id="watchSearchBtn" type="button">Search Videos</button>
+        <a id="watchOpenYouTube" href="https://www.youtube.com" target="_blank" rel="noreferrer">Open YouTube</a>
+      </div>
+    </section>
+
+    <section class="watch-player">
+      <iframe
+        id="watchFrame"
+        src="https://www.youtube.com/embed/videoseries?listType=search&list=luxury%20recipes&rel=0"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </section>
+  </main>
+
+  <script>
+    const searchInput = document.getElementById("watchSearch");
+    const searchBtn = document.getElementById("watchSearchBtn");
+    const frame = document.getElementById("watchFrame");
+    const openBtn = document.getElementById("watchOpenYouTube");
+
+    function runSearch() {
+      const query = (searchInput.value || "").trim();
+      const term = query || "luxury recipes";
+      frame.src = `https://www.youtube.com/embed/videoseries?listType=search&list=${encodeURIComponent(term)}&rel=0`;
+      if (openBtn) {
+        openBtn.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(term)}`;
+      }
+    }
+
+    searchBtn.addEventListener("click", runSearch);
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        runSearch();
+      }
+    });
+  </script>
+  <script src="/footer.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Submit Recipe | Recipe Finder</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+body{color:white;font-family:'Poppins',sans-serif}
+.submit-wrap{padding:90px 120px 90px}
+.submit-card{
+  max-width:900px;
+  margin:0 auto;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,215,0,.28);
+  border-radius:24px;
+  padding:24px;
+  backdrop-filter:blur(12px);
+}
+.submit-card h1{font-family:'Playfair Display',serif;font-size:40px;margin-bottom:8px}
+.submit-card p{color:#d8d8d8;margin-bottom:20px;font-size:14px}
+input,select,textarea{
+  width:100%;
+  padding:11px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,215,0,.35);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  margin-bottom:12px;
+}
+.ingredient-row{
+  display:grid;
+  grid-template-columns:1.2fr 0.8fr 0.8fr 1fr auto;
+  gap:10px;
+  align-items:center;
+  margin-bottom:10px;
+}
+.ingredient-row input{margin-bottom:0}
+.ingredient-row button{
+  border:none;
+  border-radius:10px;
+  background:#ff4d4f;
+  color:#fff;
+  padding:10px 12px;
+  cursor:pointer;
+}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.actions button{
+  border:none;
+  border-radius:12px;
+  padding:12px 18px;
+  cursor:pointer;
+  font-weight:600;
+}
+.primary{background:linear-gradient(135deg,#d4af37,#f7e27a);color:#111}
+.secondary{background:rgba(255,255,255,.12);border:1px solid rgba(255,215,0,.3);color:#fff}
+.status{margin-top:10px;font-size:13px;min-height:18px}
+.status-board{
+  margin-top:18px;
+  border-top:1px solid rgba(255,215,0,.25);
+  padding-top:14px;
+}
+.status-board h2{
+  margin:0 0 8px;
+  font-family:'Playfair Display',serif;
+  font-size:30px;
+}
+.status-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+}
+.status-top button{
+  border:none;
+  border-radius:10px;
+  padding:8px 12px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,215,0,.35);
+  color:#fff;
+  cursor:pointer;
+  font-size:12px;
+}
+.status-list{
+  display:grid;
+  gap:8px;
+}
+.status-item{
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:12px;
+  padding:10px;
+  background:rgba(255,255,255,.05);
+}
+.status-item h4{
+  margin:0 0 6px;
+  font-size:16px;
+}
+.status-item p{
+  margin:0;
+  font-size:13px;
+  color:#ddd;
+}
+.status-pill{
+  display:inline-block;
+  margin-bottom:6px;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:600;
+}
+.status-pill.pending{
+  background:rgba(255,193,7,.2);
+  border:1px solid rgba(255,193,7,.5);
+}
+.status-pill.approved{
+  background:rgba(40,167,69,.2);
+  border:1px solid rgba(40,167,69,.55);
+}
+.status-pill.rejected{
+  background:rgba(220,53,69,.2);
+  border:1px solid rgba(220,53,69,.5);
+}
+@media(max-width:900px){
+  .submit-wrap{padding:70px 20px 70px}
+  .ingredient-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="bg-gold"></div>
+<div class="bg-vignette"></div>
+<div class="bg-smoke"></div>
+<div class="gold-particles"></div>
+
+<header class="navbar">
+  <h1>Recipe Finder</h1>
+  <nav>
+    <a href="/user">Home</a>
+    <a href="/recipes">Recipes</a>
+    <a href="/contact">Contact</a>
+  </nav>
+</header>
+
+<main class="submit-wrap">
+  <section class="submit-card">
+    <h1>Submit New Recipe</h1>
+    <p>Your recipe will be reviewed by admin (AI-assisted verification) before publishing.</p>
+
+    <form id="recipeForm" enctype="multipart/form-data">
+      <input type="text" id="title" placeholder="Recipe Title" required>
+      <select id="category" required>
+        <option value="">Select Category</option>
+        <option>Breakfast</option>
+        <option>Lunch</option>
+        <option>Dinner</option>
+        <option>Snacks</option>
+        <option>Side Dish</option>
+      </select>
+      <select id="cuisine" required>
+        <option value="">Select Cuisine</option>
+        <option>Indian</option>
+        <option>Chinese</option>
+        <option>Italian</option>
+        <option>Continental</option>
+      </select>
+      <input type="number" id="baseServes" placeholder="Base Serves" min="1" required>
+      <input type="url" id="youtube" placeholder="YouTube Link (optional)">
+      <textarea id="instructions" rows="5" placeholder="Cooking instructions" required></textarea>
+      <input type="file" id="image" accept="image/*">
+
+      <h3 style="margin:8px 0 10px;">Ingredients</h3>
+      <div id="ingredientsContainer"></div>
+
+      <div class="actions">
+        <button type="button" class="secondary" id="addIngredientBtn">+ Add Ingredient</button>
+        <button type="submit" class="primary">Submit for Verification</button>
+      </div>
+    </form>
+    <p id="statusText" class="status"></p>
+
+    <div class="status-board">
+      <div class="status-top">
+        <h2>My Submission Status</h2>
+        <button id="refreshStatusBtn" type="button">Refresh</button>
+      </div>
+      <div id="submissionStatusList" class="status-list"></div>
+    </div>
+
+  </section>
+</main>
+
+<script>
+const ingredientsContainer = document.getElementById("ingredientsContainer");
+const addIngredientBtn = document.getElementById("addIngredientBtn");
+const recipeForm = document.getElementById("recipeForm");
+const statusText = document.getElementById("statusText");
+const submissionStatusList = document.getElementById("submissionStatusList");
+const refreshStatusBtn = document.getElementById("refreshStatusBtn");
+
+function addIngredientRow() {
+  const row = document.createElement("div");
+  row.className = "ingredient-row";
+  row.innerHTML = `
+    <input class="ing-name" type="text" placeholder="Ingredient name" required>
+    <input class="ing-qty" type="number" step="0.01" placeholder="Qty" required>
+    <input class="ing-unit" type="text" placeholder="Unit" required>
+    <input class="ing-image" type="file" accept="image/*">
+    <button type="button">X</button>
+  `;
+  row.querySelector("button").addEventListener("click", () => row.remove());
+  ingredientsContainer.appendChild(row);
+}
+
+function setStatus(text) {
+  statusText.textContent = text || "";
+}
+
+
+function renderSubmissionStatuses(recipes) {
+  if (!Array.isArray(recipes) || recipes.length === 0) {
+    submissionStatusList.innerHTML = "<div class='status-item'><p>No submissions yet.</p></div>";
+    return;
+  }
+  submissionStatusList.innerHTML = "";
+  recipes.forEach((recipe) => {
+    const status = String(recipe.status || "pending").toLowerCase();
+    const item = document.createElement("div");
+    item.className = "status-item";
+    item.innerHTML = `
+      <span class="status-pill ${status}">${status.toUpperCase()}</span>
+      <h4>${recipe.title || "Recipe"}</h4>
+      <p>${recipe.statusMessage || "Status update not available."}</p>
+    `;
+    submissionStatusList.appendChild(item);
+  });
+}
+
+async function loadSubmissionStatuses() {
+  const userEmail = (localStorage.getItem("userEmail") || "").trim().toLowerCase();
+  if (!userEmail) {
+    submissionStatusList.innerHTML = "<div class='status-item'><p>Login required to track status.</p></div>";
+    return;
+  }
+  submissionStatusList.innerHTML = "<div class='status-item'><p>Loading status...</p></div>";
+  try {
+    const res = await fetch(`/user/submitted-recipes?email=${encodeURIComponent(userEmail)}`);
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to load status");
+    }
+    renderSubmissionStatuses(data.recipes || []);
+  } catch (err) {
+    submissionStatusList.innerHTML = `<div class='status-item'><p>${err.message || "Failed to load status."}</p></div>`;
+  }
+}
+
+addIngredientBtn.addEventListener("click", addIngredientRow);
+addIngredientRow();
+refreshStatusBtn.addEventListener("click", loadSubmissionStatuses);
+
+
+recipeForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const userEmail = (localStorage.getItem("userEmail") || "").trim().toLowerCase();
+  const userName = (localStorage.getItem("userName") || "User").trim();
+  if (!userEmail) {
+    setStatus("Login required. Please login again and retry.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("title", document.getElementById("title").value.trim());
+  formData.append("category", document.getElementById("category").value);
+  formData.append("cuisine", document.getElementById("cuisine").value);
+  formData.append("baseServes", document.getElementById("baseServes").value);
+  formData.append("instructions", document.getElementById("instructions").value.trim());
+  formData.append("youtube", document.getElementById("youtube").value.trim());
+  formData.append("submittedByEmail", userEmail);
+  formData.append("submittedByName", userName);
+
+  const imageFile = document.getElementById("image").files[0];
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+
+  const ingredients = [];
+  document.querySelectorAll(".ingredient-row").forEach((row, index) => {
+    const imageField = `ingredientImage_${index}`;
+    const ingImage = row.querySelector(".ing-image").files[0];
+    if (ingImage) {
+      formData.append(imageField, ingImage);
+    }
+    ingredients.push({
+      name: row.querySelector(".ing-name").value.trim(),
+      quantity: row.querySelector(".ing-qty").value,
+      unit: row.querySelector(".ing-unit").value.trim(),
+      imageField
+    });
+  });
+  formData.append("ingredients", JSON.stringify(ingredients));
+
+  setStatus("Submitting recipe...");
+  try {
+    const res = await fetch("/user/add-recipe", {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to submit recipe");
+    }
+    setStatus(data.message || "Submitted successfully.");
+    recipeForm.reset();
+    ingredientsContainer.innerHTML = "";
+    addIngredientRow();
+    await loadSubmissionStatuses();
+  } catch (err) {
+    setStatus(err.message || "Failed to submit recipe");
+  }
+});
+
+loadSubmissionStatuses();
+</script>
+<script src="/footer.js"></script>
+</body>
+</html>
+

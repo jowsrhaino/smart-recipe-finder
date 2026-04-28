@@ -1,0 +1,100 @@
+<!-- ================= index.html ================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1280" />
+  <title>Recipe Finder | Ultra Luxury Pro Max</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<!-- BACKGROUND CINEMA -->
+<div class="bg-gold"></div>
+<div class="bg-vignette"></div>
+<div class="bg-smoke"></div>
+<div class="gold-particles"></div>
+
+<section class="hero">
+
+  <header class="navbar">
+    <h1>🍽 Recipe Finder</h1>
+    <div class="user-welcome" id="userWelcome" aria-live="polite"></div>
+    <nav>
+      <a href="/user">Home</a>
+      <a href="/recipes">Recipes</a>
+      <a href="/user/add-recipe">Add Recipe</a>
+      <a href="/chefs">Chefs</a>
+      <a href="/contact">Contact</a>
+      <a href="/premium" class="nav-btn">Premium</a>
+    </nav>
+  </header>
+
+  <div class="hero-wrap">
+
+    <div class="hero-text">
+      <h2>Luxury That<br><span>Makes You Hungry</span></h2>
+      <p>Fine-dining inspired recipes crafted with elegance, aroma and cinematic beauty.</p>
+
+      <div class="hero-actions">
+        <a class="primary" href="/recipes">Explore Recipes</a>
+        <a class="secondary" href="/watch">Watch Magic</a>
+      </div>
+
+      <div class="luxury-tags">
+        <span>Michelin Inspired</span>
+        <span>Chef Crafted</span>
+        <span>5★ Rated</span>
+      </div>
+    </div>
+
+    <div class="hero-food">
+      <div class="food-plate">
+        <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=900&q=80">
+      </div>
+
+      <div class="steam">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="gold-ring"></div>
+      <div class="shine"></div>
+      <div class="plate-shadow"></div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<script>
+  const name = localStorage.getItem("userName") || "";
+  const welcome = document.getElementById("userWelcome");
+  if (welcome) {
+    welcome.textContent = name ? `Welcome, ${name}` : "";
+  }
+
+  (async () => {
+    const userEmail = (localStorage.getItem("userEmail") || "").trim().toLowerCase();
+    if (!userEmail) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/user/premium-status?email=${encodeURIComponent(userEmail)}`);
+      const data = await res.json();
+      if (res.ok && data.premium) {
+        window.location.href = "/premium_access.html";
+      }
+    } catch {
+      // Keep home page accessible if premium check fails.
+    }
+  })();
+</script>
+<script src="/footer.js"></script>
+</body>
+</html>
+

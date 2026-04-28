@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Recipe Finder</title>
+  <meta name="viewport" content="width=1280">
+
+  <!-- Fonts (same as home) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/login.css">
+</head>
+<body>
+
+<!-- SAME BACKGROUND FEEL -->
+<div class="bg-gold"></div>
+<div class="bg-vignette"></div>
+<div class="bg-smoke"></div>
+<div class="gold-particles"></div>
+
+<section class="login-section">
+  <div class="login-card">
+    
+    
+    login to continue
+    <h1>Welcome Back</h1>
+    <p>Enter the world of luxury recipes</p>
+
+    <form id="loginform">
+      <div class="field">
+        <input type="email" name="email" required>
+        <label>Email</label>
+      </div>
+
+      <div class="field">
+        <input type="password" name="password" required>
+        <label>Password</label>
+      </div>
+
+      <button type="submit">Login</button>
+
+      <div class="links">
+        <a href="/forgot-password">Forgot Password?</a>
+        <a href="/register">Create Account</a>
+      </div>
+
+    </form>
+
+  </div>
+</section>
+
+</body>
+<script>
+  document.getElementById("loginform").addEventListener("submit", function (e) {
+    e.preventDefault(); // stop page reload
+
+    fetch("/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: document.getElementsByName("email")[0].value,
+        password: document.getElementsByName("password")[0].value
+      })
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Login failed");
+        }
+        return data;
+      })
+      .then(data => {
+        localStorage.setItem("preferredLanguage", "English");
+        localStorage.setItem("userEmail", data.email || "");
+        localStorage.setItem("userName", data.name || "");
+        localStorage.setItem("userRole", data.role || "user");
+        localStorage.setItem("isPremium", String(Boolean(data.premium)));
+        localStorage.setItem("premiumStatus", data.premiumStatus || "none");
+        localStorage.setItem("premiumPendingApproval", String(Boolean(data.premiumPendingApproval)));
+        localStorage.setItem("premiumExpiresAt", data.premiumExpiresAt || "");
+        localStorage.setItem("premiumPlanName", data.premiumPlanName || "");
+        if (data.redirect) {
+          window.location.href = data.redirect;
+          return;
+        }
+        alert(data.message || "Login successful");
+      })
+      .catch(err => {
+        console.error("Login error:", err);
+        alert(err.message || "Login failed");
+      });
+  });
+</script>
+<script src="/footer.js"></script>
+
+</html>
+

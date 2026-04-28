@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1280" />
+  <title>Register | Recipe Finder</title>
+
+  <!-- Fonts (same as index) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- SAME CSS -->
+  <link rel="stylesheet" href="/style.css" />
+
+  <!-- PAGE-ONLY CSS -->
+  <style>
+    .auth-page{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .auth-box{
+      width:420px;
+      padding:60px 50px;
+      border-radius:30px;
+      background:rgba(255,255,255,.08);
+      backdrop-filter:blur(25px);
+      box-shadow:0 40px 120px rgba(212,175,55,.35);
+      border:1px solid rgba(212,175,55,.35);
+    }
+
+    .auth-box h2{
+      font-family:'Playfair Display',serif;
+      font-size:42px;
+      text-align:center;
+      margin-bottom:10px;
+    }
+
+    .auth-box p{
+      text-align:center;
+      color:#d6d6d6;
+      margin-bottom:35px;
+    }
+
+    .auth-box input,
+    .auth-box select{
+      width:100%;
+      padding:16px 22px;
+      margin-bottom:18px;
+      border-radius:30px;
+      border:none;
+      outline:none;
+      background:rgba(255,255,255,.15);
+      color:#fff;
+      font-size:14px;
+    }
+
+    .auth-box input::placeholder{color:#ddd}
+
+    .auth-box select{
+      appearance:none;
+    }
+
+    .auth-box select option{
+      color:#111;
+      background:#fff;
+    }
+
+    .auth-box button{
+      width:100%;
+      padding:16px;
+      border-radius:40px;
+      border:none;
+      background:linear-gradient(135deg,#d4af37,#f7e27a);
+      color:#000;
+      font-size:16px;
+      cursor:pointer;
+      margin-top:10px;
+    }
+
+    .auth-links{
+      text-align:center;
+      margin-top:25px;
+      font-size:14px;
+    }
+
+    .auth-links a{
+      color:#d4af37;
+      text-decoration:none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- SAME BACKGROUND -->
+<div class="bg-gold"></div>
+<div class="bg-vignette"></div>
+<div class="bg-smoke"></div>
+<div class="gold-particles"></div>
+
+<section class="auth-page">
+
+  <div class="auth-box">
+    <h2>Join the Taste</h2>
+    <p>Create your luxury recipe account</p>
+
+    <form id="register-form" method="POST">
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <input type="hidden" name="language" value="English" />
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <div class="auth-links">
+      Already have an account?
+      <a href="/login">Login</a>
+    </div>
+  </div>
+
+</section>
+
+</body>
+<script>
+  document.getElementById("register-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const name = document.querySelector('input[name="name"]').value.trim();
+    const email = document.querySelector('input[name="email"]').value.trim();
+    const password = document.querySelector('input[name="password"]').value;
+    const language = "English";
+
+    try {
+      const res = await fetch("/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email, password, language })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+
+      localStorage.setItem("preferredLanguage", "English");
+      alert(data.message || "Registration successful. Check your email and click Verify Email button before login.");
+      window.location.href = "/login";
+    } catch (err) {
+      console.error("Registration error:", err);
+      alert(err.message || "Registration failed");
+    }
+  });
+</script>
+<script src="/footer.js"></script>
+
+
+</html>
+

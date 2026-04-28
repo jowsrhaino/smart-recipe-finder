@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Premium Access | Recipe Finder</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    html, body{
+      height:100%;
+      overflow:hidden;
+    }
+    .access-wrap{
+      padding:70px 110px 50px;
+    }
+    .access-hero{
+      display:grid;
+      grid-template-columns:1.1fr 0.9fr;
+      gap:40px;
+      align-items:center;
+    }
+    .access-hero h2{
+      font-family:'Playfair Display',serif;
+      font-size:64px;
+      line-height:1.05;
+    }
+    .access-hero p{
+      margin-top:16px;
+      color:#d4d4d4;
+      font-size:18px;
+    }
+    .access-cta{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 36px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#d4af37,#f7e27a);
+      color:#111;
+      text-decoration:none;
+      font-weight:600;
+      margin-top:24px;
+    }
+    .feature-grid{
+      margin-top:32px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+      gap:22px;
+    }
+    .feature-card{
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,215,0,0.25);
+      border-radius:22px;
+      padding:18px;
+      backdrop-filter:blur(12px);
+    }
+    .feature-card h3{
+      font-family:'Playfair Display',serif;
+      margin-bottom:8px;
+    }
+    .feature-card p{
+      color:#cfcfcf;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .top-features{
+      margin-top:34px;
+      padding:24px;
+      border-radius:24px;
+      border:1px solid rgba(255,215,0,0.3);
+      background:linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,215,0,0.05));
+      backdrop-filter:blur(12px);
+    }
+    .top-features h3{
+      margin:0 0 6px;
+      font-family:'Playfair Display',serif;
+      font-size:34px;
+    }
+    .top-features p{
+      margin:0;
+      color:#d8d8d8;
+      font-size:15px;
+    }
+    .top-grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+    }
+    .top-card{
+      padding:16px;
+      border-radius:16px;
+      border:1px solid rgba(255,215,0,0.25);
+      background:rgba(0,0,0,0.35);
+    }
+    .top-card h4{
+      margin:0 0 8px;
+      font-family:'Playfair Display',serif;
+      font-size:22px;
+      color:#ffe089;
+    }
+    .top-card p{
+      color:#d4d4d4;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .planner-row{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+    }
+    .planner-card{
+      padding:16px;
+      border-radius:16px;
+      border:1px solid rgba(255,215,0,0.28);
+      background:rgba(0,0,0,0.35);
+      display:grid;
+      gap:10px;
+    }
+    .planner-card h4{
+      margin:0;
+      font-family:'Playfair Display',serif;
+      font-size:20px;
+      color:#ffe089;
+    }
+    .planner-card p{
+      margin:0;
+      color:#d4d4d4;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .planner-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 16px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#d4af37,#f7e27a);
+      color:#111;
+      text-decoration:none;
+      font-weight:600;
+      font-size:12px;
+      width:max-content;
+    }
+    .access-image{
+      width:100%;
+      border-radius:26px;
+      border:1px solid rgba(255,215,0,0.25);
+    }
+    .ai-lab{
+      margin-top:36px;
+      padding:28px;
+      border-radius:24px;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,215,0,0.25);
+      backdrop-filter:blur(12px);
+    }
+    .ai-lab h3{
+      font-family:'Playfair Display',serif;
+      font-size:30px;
+      margin-bottom:10px;
+    }
+    .ai-form{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+    }
+    .ai-form input{
+      flex:1;
+      min-width:240px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,215,0,0.35);
+      background:rgba(255,255,255,0.08);
+      color:#fff;
+      outline:none;
+    }
+    .ai-form button{
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      cursor:pointer;
+      background:linear-gradient(135deg,#d4af37,#f7e27a);
+      color:#111;
+      font-weight:600;
+    }
+    .ai-status{
+      margin-top:10px;
+      font-size:13px;
+      color:#d0d0d0;
+    }
+    .ai-suggestions{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .suggestion-chip{
+      border:1px solid rgba(255,215,0,0.35);
+      background:rgba(255,255,255,0.1);
+      color:#fff;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .suggestion-row{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .suggestion-row button{
+      border:none;
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:600;
+    }
+    .suggestion-apply{
+      background:linear-gradient(135deg,#d4af37,#f7e27a);
+      color:#111;
+    }
+    .suggestion-clear{
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,215,0,0.3);
+      color:#fff;
+    }
+    .ai-result{
+      margin-top:20px;
+      display:grid;
+      gap:18px;
+    }
+    .ai-card{
+      display:grid;
+      grid-template-columns:0.9fr 1.1fr;
+      gap:18px;
+      align-items:start;
+      background:rgba(0,0,0,0.45);
+      border-radius:20px;
+      padding:18px;
+      border:1px solid rgba(255,215,0,0.25);
+    }
+    .ai-card img{
+      width:100%;
+      border-radius:16px;
+      border:1px solid rgba(255,215,0,0.3);
+      object-fit:cover;
+      max-height:260px;
+    }
+    .ai-card h4{
+      margin:0 0 8px;
+      font-family:'Playfair Display',serif;
+      font-size:26px;
+    }
+    .ai-card ul{
+      margin:0;
+      padding-left:18px;
+      color:#d0d0d0;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .ai-card p{
+      color:#d0d0d0;
+      font-size:14px;
+      line-height:1.6;
+      margin-top:10px;
+    }
+    .ai-card a{
+      display:inline-flex;
+      margin-top:12px;
+      align-items:center;
+      justify-content:center;
+      padding:10px 16px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#d4af37,#f7e27a);
+      color:#111;
+      text-decoration:none;
+      font-weight:600;
+      font-size:13px;
+    }
+    @media(max-width:900px){
+      .access-wrap{padding:60px 24px 40px}
+      .access-hero{grid-template-columns:1fr}
+      .access-hero h2{font-size:46px}
+      .ai-card{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gold"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-smoke"></div>
+  <div class="gold-particles"></div>
+
+  <header class="navbar">
+    <h1>🍽 Recipe Finder</h1>
+    <nav>
+      <a href="/user">Home</a>
+      <a href="/recipes">Recipes</a>
+      <a href="/meal_planner.html">Meal Planner</a>
+      <a href="/user/add-recipe">Add Recipe</a>
+      <a href="/chefs">Chefs</a>
+      <a href="/contact">Contact</a>
+      <a href="/premium" class="nav-btn">Premium</a>
+    </nav>
+  </header>
+
+  <main class="access-wrap">
+    <section class="access-hero">
+      <div>
+        <h2>Welcome to Premium Studio</h2>
+        <p>Exclusive collections, deep‑dive technique guides, and intelligent ingredient pairing await you.</p>
+        <a class="access-cta" href="/premium-search">Open Premium Search</a>
+      </div>
+      <div>
+        <img class="access-image" src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=80" alt="Premium access">
+      </div>
+    </section>
+
+    <section class="feature-grid">
+      <article class="feature-card">
+        <h3>Studio‑Grade Tutorials</h3>
+        <p>Multi‑angle video guidance with professional plating notes.</p>
+      </article>
+      <article class="feature-card">
+        <h3>Global Chef Vault</h3>
+        <p>Private dishes from top chefs across continents and cuisines.</p>
+      </article>
+      <article class="feature-card">
+        <h3>Ingredient Intelligence</h3>
+        <p>Smart ingredient swaps, seasonal pairings, and nutrition hints.</p>
+      </article>
+      <article class="feature-card">
+        <h3>Weekly Premium Menus</h3>
+        <p>Curated menus with balance of taste, health, and presentation.</p>
+      </article>
+      <article class="feature-card">
+        <h3>AI Menu Composer</h3>
+        <p>Generate a full week plan optimized for time, budget, and nutrition.</p>
+      </article>
+      <article class="feature-card">
+        <h3>Flavor Pairing Lab</h3>
+        <p>Instant spice and herb pairing suggestions with heat calibration.</p>
+      </article>
+    </section>
+
+    <section class="top-features">
+      <h3>Top Premium Tools</h3>
+      <p>Built for advanced home chefs who need speed, precision, and AI support.</p>
+      <div class="top-grid">
+        <article class="top-card">
+          <h4>Pantry Vision</h4>
+          <p>Creates dishes from what you already have and reduces kitchen waste.</p>
+        </article>
+        <article class="top-card">
+          <h4>Smart Heat Control</h4>
+          <p>Balances spice and heat by cuisine style and audience preference.</p>
+        </article>
+        <article class="top-card">
+          <h4>Live Timing Coach</h4>
+          <p>Gives cooking sequence and stage timing so everything finishes together.</p>
+        </article>
+      </div>
+      <div class="planner-row">
+        <article class="planner-card">
+          <h4>Meal Planner</h4>
+          <p>Plan meals by day and time, then review your week in one view.</p>
+          <a class="planner-btn" href="/recipes#meal-planner">Open Meal Planner</a>
+        </article>
+        <article class="planner-card">
+          <h4>Grocery Auto List</h4>
+          <p>Generate a combined grocery list for your planned meals.</p>
+          <a class="planner-btn" href="/recipes#grocery-list">Generate Groceries</a>
+        </article>
+      </div>
+    </section>
+
+
+  </main>
+
+  <script>
+    const aiInput = document.getElementById("aiIngredientsInput");
+    const aiBtn = document.getElementById("aiGenerateBtn");
+    const aiStatus = document.getElementById("aiStatus");
+    const aiResult = document.getElementById("aiResult");
+    const userEmail = (localStorage.getItem("userEmail") || "").trim().toLowerCase();
+
+    function parseIngredientList(text) {
+      return String(text || "")
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function resolveImage(recipe) {
+      if (!recipe) return "https://source.unsplash.com/featured/?recipe";
+      const image = recipe.image || "";
+      if (image.startsWith("http")) return image;
+      if (image) return `/uploads/${image}`;
+      const title = recipe.title || "recipe";
+      return `https://source.unsplash.com/featured/?${encodeURIComponent(title)}`;
+    }
+
+    function renderAiRecipe(recipe, replyText) {
+      if (!recipe) {
+        aiResult.innerHTML = "";
+        return;
+      }
+      const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
+      const ingredientsHtml = ingredients.length
+        ? `<ul>${ingredients.map((item) => `<li>${item.name || "Ingredient"} ${item.quantity || ""} ${item.unit || ""}</li>`).join("")}</ul>`
+        : "<p>Ingredients not available.</p>";
+      const instructions = recipe.instructions || "";
+      const youtubeQuery = encodeURIComponent(`${recipe.title || "recipe"} recipe`);
+      const youtubeLink = `https://www.youtube.com/results?search_query=${youtubeQuery}`;
+
+      aiResult.innerHTML = `
+        <div class="ai-card">
+          <img src="${resolveImage(recipe)}" alt="${recipe.title || "Recipe"}">
+          <div>
+            <h4>${recipe.title || "Recipe"}</h4>
+            ${replyText ? `<p>${replyText}</p>` : ""}
+            <h5 style="margin:12px 0 6px;color:#ffd700;">Ingredients</h5>
+            ${ingredientsHtml}
+            <h5 style="margin:12px 0 6px;color:#ffd700;">Instructions</h5>
+            <p>${instructions || "Instructions not available."}</p>
+            <a href="${youtubeLink}" target="_blank" rel="noopener">Watch on YouTube</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderNeedMoreSuggestions(replyText, suggestions) {
+      const chips = Array.isArray(suggestions) && suggestions.length
+        ? suggestions.map((item) => `<span class="suggestion-chip">${item}</span>`).join("")
+        : "";
+      aiResult.innerHTML = chips
+        ? `<div class="feature-card"><p>${replyText}</p><div class="ai-suggestions">${chips}</div></div>`
+        : `<div class="feature-card"><p>${replyText}</p></div>`;
+      if (chips) {
+        aiResult.querySelectorAll(".suggestion-chip").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            const current = parseIngredientList(aiInput.value);
+            if (!current.includes(chip.textContent)) {
+              current.push(chip.textContent);
+            }
+            aiInput.value = current.join(", ");
+          });
+        });
+      }
+    }
+
+    async function verifyPremiumAccess() {
+      if (!userEmail) {
+        window.location.href = "/login";
+        return false;
+      }
+      try {
+        const res = await fetch(`/api/user/premium-status?email=${encodeURIComponent(userEmail)}`);
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to verify premium access");
+        }
+        localStorage.setItem("isPremium", String(Boolean(data.premium)));
+        localStorage.setItem("premiumStatus", data.premiumStatus || "none");
+        localStorage.setItem("premiumPendingApproval", String(Boolean(data.premiumPendingApproval)));
+        localStorage.setItem("premiumExpiresAt", data.premiumExpiresAt || "");
+        localStorage.setItem("premiumPlanName", data.premiumPlanName || "");
+        if (!data.premium) {
+          const msg = data.premiumPendingApproval
+            ? "Payment verified. Waiting for admin approval."
+            : "Premium access is not active. Please purchase a plan.";
+          alert(msg);
+          window.location.href = "/premium";
+          return false;
+        }
+        return true;
+      } catch (err) {
+        alert(err.message || "Unable to validate premium access.");
+        window.location.href = "/premium";
+        return false;
+      }
+    }
+
+    async function generateDish() {
+      const text = (aiInput.value || "").trim();
+      if (!text) {
+        aiStatus.textContent = "Please enter ingredients.";
+        return;
+      }
+      aiBtn.disabled = true;
+      aiStatus.textContent = "Generating dish...";
+      aiResult.innerHTML = "";
+
+      try {
+        const hasAccess = await verifyPremiumAccess();
+        if (!hasAccess) {
+          aiBtn.disabled = false;
+          return;
+        }
+        const language = localStorage.getItem("preferredLanguage") || "English";
+        const ingredients = parseIngredientList(text);
+        const res = await fetch("/api/premium/ingredient-dish", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: userEmail,
+            ingredients,
+            language
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to generate dish");
+        }
+        if (data.status === "need_more") {
+          renderNeedMoreSuggestions(data.reply || "Please add more ingredients.", data.suggestedIngredients || []);
+          aiStatus.textContent = "Need more ingredients.";
+          return;
+        }
+        renderAiRecipe(data.recipe, data.reply || "");
+        aiStatus.textContent = "Premium dish ready!";
+      } catch (err) {
+        aiStatus.textContent = err.message || "Failed to generate dish.";
+      } finally {
+        aiBtn.disabled = false;
+      }
+    }
+
+    aiBtn.addEventListener("click", generateDish);
+    aiInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        generateDish();
+      }
+    });
+    verifyPremiumAccess();
+  </script>
+  <script src="/footer.js"></script>
+</body>
+</html>

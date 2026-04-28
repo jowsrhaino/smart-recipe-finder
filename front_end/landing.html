@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Royal Recipe Finder</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:#020202;
+  font-family:'Poppins',sans-serif;
+  color:#fff;
+  overflow:hidden;
+}
+
+/* GOLD BACKGROUND EFFECTS */
+.bg-gold{
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at top right,#d4af37 0%,transparent 45%),
+  radial-gradient(circle at bottom left,#5c4412 0%,transparent 60%);
+  opacity:.25;
+  z-index:-5;
+}
+
+.bg-vignette{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle,transparent 40%,#000 90%);
+  z-index:-4;
+}
+
+.gold-particles::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:url('https://www.transparenttextures.com/patterns/gold-dust.png');
+  opacity:.18;
+  z-index:-3;
+}
+
+/* HERO SECTION */
+.hero{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:40px;
+}
+
+.hero-content{
+  max-width:900px;
+  animation:fadeUp 1.5s ease forwards;
+}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:90px;
+  line-height:1.05;
+}
+
+.hero h1 span{
+  color:#d4af37;
+  text-shadow:0 0 30px rgba(212,175,55,.6);
+}
+
+.hero p{
+  margin-top:35px;
+  font-size:22px;
+  color:#d6d6d6;
+}
+
+/* BUTTON */
+.enter-btn{
+  margin-top:60px;
+  padding:20px 70px;
+  font-size:18px;
+  border-radius:50px;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(135deg,#d4af37,#f7e27a);
+  color:#000;
+  font-weight:700;
+  letter-spacing:1px;
+  transition:.4s;
+  position:relative;
+  overflow:hidden;
+}
+
+.enter-btn:hover{
+  transform:translateY(-5px);
+  box-shadow:0 15px 40px rgba(212,175,55,.6);
+}
+
+/* GLOW ANIMATION */
+.enter-btn::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.7),transparent);
+  transition:.8s;
+}
+
+.enter-btn:hover::after{
+  left:100%;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(40px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* MOBILE */
+@media(max-width:900px){
+  .hero h1{font-size:48px}
+  .hero p{font-size:18px}
+}
+</style>
+</head>
+
+<body class="gold-particles">
+
+<div class="bg-gold"></div>
+<div class="bg-vignette"></div>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>Royal <span>Recipe</span> Finder</h1>
+    <p>Discover premium recipes with voice search, multilingual support, and seamless video guidance — all in one intelligent culinary experience.</p>
+
+    <button class="enter-btn" onclick="enterApp()">
+      ENTER EXPERIENCE
+    </button>
+  </div>
+</section>
+
+<script>
+function enterApp(){
+  window.location.href="/login";
+}
+</script>
+<script src="/footer.js"></script>
+
+</body>
+</html>

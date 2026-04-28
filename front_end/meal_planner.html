@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Meal Planner | Recipe Finder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body{color:#fff;font-family:'Poppins',sans-serif}
+    .planner-wrap{padding:90px 120px 90px}
+    .planner-shell{
+      max-width:1200px;
+      margin:0 auto;
+      display:grid;
+      gap:18px;
+    }
+    .planner-header h1{
+      margin:0 0 6px;
+      font-family:'Playfair Display',serif;
+      font-size:44px;
+    }
+    .planner-header p{
+      margin:0;
+      color:#d8d8d8;
+      font-size:14px;
+    }
+    .planner-grid{
+      display:grid;
+      grid-template-columns:1.05fr 0.95fr;
+      gap:16px;
+    }
+    .card{
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,215,0,.28);
+      border-radius:22px;
+      padding:20px;
+      backdrop-filter:blur(12px);
+    }
+    .card h2{
+      margin:0 0 6px;
+      font-family:'Playfair Display',serif;
+      font-size:28px;
+    }
+    .card p{
+      margin:0 0 14px;
+      color:#d8d8d8;
+      font-size:13px;
+    }
+    .planner-form{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .planner-full{
+      grid-column:1 / -1;
+    }
+    label{
+      display:block;
+      font-size:12px;
+      color:#d8d8d8;
+      margin-bottom:6px;
+    }
+    input,select,textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,215,0,.35);
+      background:rgba(255,255,255,.08);
+      color:#fff;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .actions button{
+      border:none;
+      border-radius:12px;
+      padding:10px 16px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .primary{background:linear-gradient(135deg,#d4af37,#f7e27a);color:#111}
+    .secondary{background:rgba(255,255,255,.12);border:1px solid rgba(255,215,0,.3);color:#fff}
+    .planner-list{
+      display:grid;
+      gap:10px;
+      margin-top:8px;
+    }
+    .planner-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.35);
+    }
+    .planner-item-main{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .planner-thumb{
+      width:56px;
+      height:44px;
+      border-radius:8px;
+      object-fit:cover;
+      border:1px solid rgba(255,215,0,.3);
+    }
+    .planner-title{
+      font-size:14px;
+      font-weight:600;
+    }
+    .planner-meta{
+      font-size:12px;
+      color:#cfcfcf;
+    }
+    .planner-item button{
+      border:none;
+      border-radius:10px;
+      padding:8px 10px;
+      background:#ff4d4f;
+      color:#fff;
+      cursor:pointer;
+      font-size:12px;
+    }
+    .status{
+      font-size:12px;
+      color:#d8d8d8;
+      min-height:16px;
+    }
+    .grocery-controls{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .grocery-list{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:12px;
+      padding:10px;
+      background:rgba(0,0,0,.3);
+      font-size:13px;
+      color:#e6e6e6;
+      min-height:80px;
+      display:grid;
+      gap:6px;
+    }
+    .grocery-item{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .ai-note{
+      font-size:12px;
+      color:#ffd980;
+      margin-top:8px;
+    }
+    .is-hidden{display:none}
+    @media(max-width:980px){
+      .planner-wrap{padding:70px 20px 70px}
+      .planner-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gold"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-smoke"></div>
+  <div class="gold-particles"></div>
+
+  <header class="navbar">
+    <h1>Recipe Finder</h1>
+    <nav>
+      <a href="/user">Home</a>
+      <a href="/recipes">Recipes</a>
+      <a href="/premium">Premium</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="planner-wrap">
+    <section class="planner-shell">
+      <div class="planner-header">
+        <h1>Meal Planner & AI Grocery List</h1>
+        <p>Plan meals by day, then auto-generate groceries for the week or a single day.</p>
+      </div>
+
+      <div class="planner-grid">
+        <div class="card">
+          <h2>Plan Meals</h2>
+          <p>Choose recipes and schedule them across the week.</p>
+    <div class="planner-form">
+      <div>
+        <label for="plannerRecipeInput">Recipe</label>
+        <input id="plannerRecipeInput" list="plannerRecipeList" placeholder="Type or choose a recipe">
+        <datalist id="plannerRecipeList"></datalist>
+      </div>
+            <div>
+              <label for="plannerDaySelect">Day</label>
+              <select id="plannerDaySelect">
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+                <option>Sunday</option>
+              </select>
+            </div>
+            <div>
+              <label for="plannerTimeSelect">Meal Time</label>
+              <select id="plannerTimeSelect">
+                <option>Breakfast</option>
+                <option>Lunch</option>
+                <option>Dinner</option>
+                <option>Snack</option>
+              </select>
+            </div>
+      <div>
+        <label for="plannerServeInput">Servings</label>
+        <input id="plannerServeInput" type="number" min="1" step="1" value="2">
+      </div>
+      <div class="planner-full">
+        <label for="plannerIngredientsInput">Custom Ingredients (optional for grocery list)</label>
+        <textarea id="plannerIngredientsInput" rows="2" placeholder="tomato 200 g, onion 1 kg, oil 2 tbsp"></textarea>
+      </div>
+    </div>
+          <div class="actions">
+            <button id="plannerAddBtn" class="primary" type="button">Add to Plan</button>
+            <button id="plannerClearBtn" class="secondary" type="button">Clear Plan</button>
+          </div>
+          <div id="plannerList" class="planner-list"></div>
+          <div id="plannerStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+          <h2>Grocery List</h2>
+          <p>Auto-generate groceries from planned meals.</p>
+          <div class="grocery-controls">
+            <div>
+              <label for="groceryScopeSelect">Scope</label>
+              <select id="groceryScopeSelect">
+                <option value="week">Week Total</option>
+                <option value="day">Single Day</option>
+              </select>
+            </div>
+            <div id="groceryDayField">
+              <label for="groceryDaySelect">Day</label>
+              <select id="groceryDaySelect">
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+                <option>Sunday</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="generateGroceryBtn" class="primary" type="button">Generate</button>
+            <button id="copyGroceryBtn" class="secondary" type="button">Copy</button>
+          </div>
+          <div id="groceryList" class="grocery-list">No items yet.</div>
+          <div class="ai-note">Grocery list shows weights in g/kg and liquids in ml/L. Custom ingredients are treated as 1 serving and scaled by servings.</div>
+          <div id="groceryStatus" class="status"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const plannerRecipeInput = document.getElementById("plannerRecipeInput");
+    const plannerRecipeList = document.getElementById("plannerRecipeList");
+    const plannerDaySelect = document.getElementById("plannerDaySelect");
+    const plannerTimeSelect = document.getElementById("plannerTimeSelect");
+    const plannerServeInput = document.getElementById("plannerServeInput");
+    const plannerIngredientsInput = document.getElementById("plannerIngredientsInput");
+    const plannerAddBtn = document.getElementById("plannerAddBtn");
+    const plannerClearBtn = document.getElementById("plannerClearBtn");
+    const plannerList = document.getElementById("plannerList");
+    const plannerStatus = document.getElementById("plannerStatus");
+    const groceryScopeSelect = document.getElementById("groceryScopeSelect");
+    const groceryDayField = document.getElementById("groceryDayField");
+    const groceryDaySelect = document.getElementById("groceryDaySelect");
+    const generateGroceryBtn = document.getElementById("generateGroceryBtn");
+    const copyGroceryBtn = document.getElementById("copyGroceryBtn");
+    const groceryList = document.getElementById("groceryList");
+    const groceryStatus = document.getElementById("groceryStatus");
+
+    const MEAL_PLAN_KEY = "premiumMealPlan";
+    let plannerRecipeLookup = new Map();
+
+    function setPlannerStatus(text) {
+      plannerStatus.textContent = text || "";
+    }
+    function setGroceryStatus(text) {
+      groceryStatus.textContent = text || "";
+    }
+    function resolveRecipeImage(recipe) {
+      const src = (recipe?.image || "").trim();
+      if (!src) return `https://source.unsplash.com/featured/?${encodeURIComponent(recipe?.title || "recipe")}`;
+      if (src.startsWith("http")) return src;
+      return `/uploads/${src}`;
+    }
+    function loadMealPlan() {
+      try {
+        const raw = localStorage.getItem(MEAL_PLAN_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    function saveMealPlan(plan) {
+      localStorage.setItem(MEAL_PLAN_KEY, JSON.stringify(plan || []));
+    }
+    function getPlanTime(entry) {
+      const value = String(entry?.time || "").trim();
+      return value || "Dinner";
+    }
+    function getPlanServes(entry) {
+      const value = Number(entry?.serves);
+      if (Number.isFinite(value) && value > 0) return value;
+      const fallback = Number(entry?.recipe?.baseServes);
+      if (Number.isFinite(fallback) && fallback > 0) return fallback;
+      return 1;
+    }
+    function renderMealPlan() {
+      const plan = loadMealPlan();
+      if (!plan.length) {
+        plannerList.innerHTML = "<div class='status'>No planned dishes.</div>";
+        refreshGroceryList();
+        return;
+      }
+      plannerList.innerHTML = "";
+      plan.forEach((entry, index) => {
+        const timeLabel = getPlanTime(entry);
+        const servesLabel = getPlanServes(entry);
+        const recipe = entry.recipe || {};
+        const row = document.createElement("div");
+        row.className = "planner-item";
+        row.innerHTML = `
+          <div class="planner-item-main">
+            <img class="planner-thumb" src="${resolveRecipeImage(recipe)}" alt="${entry.title || "Recipe"}">
+            <div>
+              <div class="planner-title">${entry.title || "Recipe"}</div>
+              <div class="planner-meta">${entry.day} • ${timeLabel} • Serves ${servesLabel}</div>
+            </div>
+          </div>
+          <button type="button">Remove</button>
+        `;
+        const img = row.querySelector(".planner-thumb");
+        if (img) {
+          img.onerror = () => {
+            img.onerror = null;
+            img.src = resolveRecipeImage({ title: entry.title || "recipe" });
+          };
+        }
+        row.querySelector("button").addEventListener("click", () => {
+          const updated = plan.filter((_, idx) => idx !== index);
+          saveMealPlan(updated);
+          renderMealPlan();
+        });
+        plannerList.appendChild(row);
+      });
+      refreshGroceryList();
+    }
+    function populatePlannerOptions(recipes) {
+      const current = plannerRecipeInput.value;
+      plannerRecipeList.innerHTML = "";
+      plannerRecipeLookup = new Map();
+      recipes.forEach((recipe) => {
+        const title = (recipe.title || "Recipe").trim();
+        if (!title) return;
+        const key = title.toLowerCase();
+        if (!plannerRecipeLookup.has(key)) {
+          plannerRecipeLookup.set(key, recipe);
+          const option = document.createElement("option");
+          option.value = title;
+          plannerRecipeList.appendChild(option);
+        }
+      });
+      plannerRecipeInput.value = current || "";
+    }
+    function addMealPlanEntry(recipe, day, time, serves) {
+      const parsedServes = Number(serves);
+      const safeServes = Number.isFinite(parsedServes) && parsedServes > 0 ? parsedServes : getPlanServes({ recipe });
+      const plan = loadMealPlan();
+      plan.push({
+        title: recipe.title || "Recipe",
+        day,
+        time: time || "Dinner",
+        serves: safeServes,
+        recipe
+      });
+      saveMealPlan(plan);
+      renderMealPlan();
+    }
+    function parseQuantityText(raw) {
+      if (!raw) return NaN;
+      const text = String(raw).trim();
+      if (text.includes("/")) {
+        const parts = text.split("/");
+        if (parts.length === 2) {
+          const num = Number(parts[0]);
+          const den = Number(parts[1]);
+          if (Number.isFinite(num) && Number.isFinite(den) && den !== 0) {
+            return num / den;
+          }
+        }
+        return NaN;
+      }
+      const value = Number(text);
+      return Number.isFinite(value) ? value : NaN;
+    }
+    function formatQuantity(value) {
+      if (!Number.isFinite(value)) return "";
+      const rounded = Math.round(value * 100) / 100;
+      return Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(/\.?0+$/, "");
+    }
+
+    function parseCustomIngredients(text) {
+      const chunks = String(text || "")
+        .split(/[\n,]/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+      const items = [];
+      const qtyPattern = "(\\d+(?:\\.\\d+)?|\\d+\\/\\d+)";
+      const unitPattern = "(kg|kgs|g|gm|gms|gram|grams|mg|ml|l|liter|litre|liters|litres|tsp|tbsp|cup|cups|teaspoon|teaspoons|tablespoon|tablespoons)";
+      const startQty = new RegExp(`^${qtyPattern}\\s*${unitPattern}\\s*(.+)$`, "i");
+      const endQty = new RegExp(`^(.+?)\\s*${qtyPattern}\\s*${unitPattern}$`, "i");
+      const startNoUnit = new RegExp(`^${qtyPattern}\\s+(.+)$`, "i");
+      const endNoUnit = new RegExp(`^(.+?)\\s+${qtyPattern}$`, "i");
+
+      chunks.forEach((chunk) => {
+        const cleaned = chunk.replace(/\s+/g, " ").trim();
+        let match = cleaned.match(startQty);
+        if (match) {
+          items.push({ name: match[3].trim(), quantity: match[1], unit: match[2] });
+          return;
+        }
+        match = cleaned.match(endQty);
+        if (match) {
+          items.push({ name: match[1].trim(), quantity: match[2], unit: match[3] });
+          return;
+        }
+        match = cleaned.match(startNoUnit);
+        if (match) {
+          items.push({ name: match[2].trim(), quantity: match[1], unit: "" });
+          return;
+        }
+        match = cleaned.match(endNoUnit);
+        if (match) {
+          items.push({ name: match[1].trim(), quantity: match[2], unit: "" });
+          return;
+        }
+        const name = cleaned.replace(/[-:]+$/,"").trim();
+        if (name) {
+          items.push({ name, quantity: "", unit: "" });
+        }
+      });
+      return items;
+    }
+    function normalizeMeasurement(qty, unit, name) {
+      const u = String(unit || "").trim().toLowerCase();
+      const lowerName = String(name || "").toLowerCase();
+      const weightUnits = ["kg","kgs","kilogram","kilograms","g","gram","grams","mg","milligram","milligrams"];
+      const volumeUnits = ["ml","milliliter","milliliters","millilitre","millilitres","l","liter","liters","litre","litres"];
+      const volumeAliases = {
+        tsp: 5,
+        teaspoon: 5,
+        teaspoons: 5,
+        tbsp: 15,
+        tablespoon: 15,
+        tablespoons: 15,
+        cup: 240,
+        cups: 240
+      };
+
+      if (weightUnits.includes(u)) {
+        if (["kg","kgs","kilogram","kilograms"].includes(u)) return { qty: qty * 1000, type: "weight" };
+        if (["mg","milligram","milligrams"].includes(u)) return { qty: qty / 1000, type: "weight" };
+        return { qty, type: "weight" };
+      }
+
+      if (volumeUnits.includes(u)) {
+        if (["l","liter","liters","litre","litres"].includes(u)) return { qty: qty * 1000, type: "volume" };
+        return { qty, type: "volume" };
+      }
+
+      if (volumeAliases[u]) {
+        return { qty: qty * volumeAliases[u], type: "volume" };
+      }
+
+      const liquidKeywords = ["water","milk","oil","juice","vinegar","broth","stock","syrup","cream","sauce","coconut"];
+      if (!u && liquidKeywords.some((key) => lowerName.includes(key))) {
+        return { qty, type: "volume" };
+      }
+
+      if (!u) {
+        return { qty, type: "weight" };
+      }
+
+      return { qty, type: "weight" };
+    }
+
+    function formatWeightGrams(value) {
+      if (!Number.isFinite(value)) return "";
+      if (value >= 1000) {
+        const kg = Math.round((value / 1000) * 100) / 100;
+        return `${kg} kg`.replace(/\.?0+ kg$/, " kg");
+      }
+      const g = Math.round(value * 100) / 100;
+      return `${g} g`.replace(/\.?0+ g$/, " g");
+    }
+
+    function formatVolumeMl(value) {
+      if (!Number.isFinite(value)) return "";
+      if (value >= 1000) {
+        const liters = Math.round((value / 1000) * 100) / 100;
+        return `${liters} L`.replace(/\.?0+ L$/, " L");
+      }
+      const ml = Math.round(value * 100) / 100;
+      return `${ml} ml`.replace(/\.?0+ ml$/, " ml");
+    }
+
+    function generateGroceryList({ scope = "week", day = "Monday" } = {}) {
+      const plan = loadMealPlan();
+      const filteredPlan = scope === "day" ? plan.filter((entry) => entry.day === day) : plan;
+      const map = new Map();
+      filteredPlan.forEach((entry) => {
+        const ingredients = entry.recipe?.ingredients || [];
+        const baseServes = Number(entry.recipe?.baseServes);
+        const desiredServes = getPlanServes(entry);
+        const factor = Number.isFinite(baseServes) && baseServes > 0 ? desiredServes / baseServes : 1;
+        ingredients.forEach((item) => {
+          const name = (item.name || "").trim();
+          if (!name) return;
+          const rawUnit = (item.unit || "").trim();
+          const qty = parseQuantityText(item.quantity);
+          const normalized = Number.isFinite(qty)
+            ? normalizeMeasurement(qty, rawUnit, name)
+            : { qty: qty, type: "weight" };
+          const key = `${name.toLowerCase()}|${normalized.type}`;
+          if (!map.has(key)) {
+            map.set(key, { name, qty: 0, hasQty: false, type: normalized.type });
+          }
+          const data = map.get(key);
+          if (Number.isFinite(normalized.qty)) {
+            data.qty += normalized.qty * factor;
+            data.hasQty = true;
+          }
+        });
+      });
+      const lines = Array.from(map.values()).map((item) => {
+        if (item.hasQty && item.type === "weight") {
+          return `${item.name} - ${formatWeightGrams(item.qty)}`.trim();
+        }
+        if (item.hasQty && item.type === "volume") {
+          return `${item.name} - ${formatVolumeMl(item.qty)}`.trim();
+        }
+        return item.name;
+      });
+      return lines.length ? lines : ["No items yet."];
+    }
+    function refreshGroceryList() {
+      const scope = groceryScopeSelect.value || "week";
+      const day = groceryDaySelect.value || "Monday";
+      const lines = generateGroceryList({ scope, day });
+      groceryList.innerHTML = "";
+      lines.forEach((line) => {
+        const row = document.createElement("div");
+        row.className = "grocery-item";
+        row.textContent = line;
+        groceryList.appendChild(row);
+      });
+      const plan = loadMealPlan();
+      if (!plan.length) {
+        setGroceryStatus("Add meals to auto-generate groceries.");
+      } else {
+        setGroceryStatus("Grocery list auto-generated.");
+      }
+    }
+    function updateGroceryScopeUI() {
+      const scope = groceryScopeSelect.value;
+      groceryDayField.classList.toggle("is-hidden", scope !== "day");
+    }
+    async function fetchAiRecipeForPlanner({ recipeName, ingredientsText }) {
+      const message = ingredientsText
+        ? `Ingredients: ${ingredientsText}`
+        : recipeName;
+      if (!message) {
+        return null;
+      }
+      const language = localStorage.getItem("preferredLanguage") || "English";
+      const res = await fetch("/api/assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, language })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "AI search failed");
+      }
+      const recipe = Array.isArray(data.recipes) ? data.recipes[0] : null;
+      return recipe || null;
+    }
+    async function loadPlannerRecipes() {
+      try {
+        const res = await fetch("/api/recipes?all=true");
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to load recipes");
+        }
+        const list = Array.isArray(data) ? data : [];
+        populatePlannerOptions(list);
+      } catch (err) {
+        setPlannerStatus(err.message || "Unable to load recipes for planner.");
+      }
+    }
+
+    plannerAddBtn.addEventListener("click", async () => {
+      const recipeName = (plannerRecipeInput.value || "").trim();
+      const ingredientsText = (plannerIngredientsInput?.value || "").trim();
+      if (!recipeName && !ingredientsText) {
+        setPlannerStatus("Type a recipe name or ingredients.");
+        return;
+      }
+
+      const timeValue = plannerTimeSelect.value || "Dinner";
+      const serveValue = Number(plannerServeInput.value);
+      let recipe = recipeName ? plannerRecipeLookup.get(recipeName.toLowerCase()) : null;
+
+      if (!recipe) {
+        try {
+          setPlannerStatus("Searching AI for recipe details...");
+          plannerAddBtn.disabled = true;
+          const aiRecipe = await fetchAiRecipeForPlanner({
+            recipeName,
+            ingredientsText
+          });
+          if (aiRecipe) {
+            recipe = {
+              ...aiRecipe,
+              title: recipeName || aiRecipe.title || "Recipe",
+              baseServes: Number(aiRecipe.baseServes) || 1
+            };
+          }
+        } catch (err) {
+          setPlannerStatus(err.message || "AI search failed. Add ingredients manually.");
+        } finally {
+          plannerAddBtn.disabled = false;
+        }
+      }
+
+      if (!recipe) {
+        const customIngredients = parseCustomIngredients(ingredientsText);
+        if (!customIngredients.length) {
+          setPlannerStatus("No ingredients found. Please add ingredients for grocery list.");
+          return;
+        }
+        recipe = {
+          title: recipeName || "Custom Recipe",
+          ingredients: customIngredients,
+          baseServes: 1
+        };
+        setPlannerStatus("Custom ingredients are treated as 1 serving. Servings will scale the grocery list.");
+      } else {
+        setPlannerStatus("");
+      }
+
+      addMealPlanEntry(recipe, plannerDaySelect.value || "Monday", timeValue, serveValue);
+      plannerRecipeInput.value = "";
+      if (plannerIngredientsInput) {
+        plannerIngredientsInput.value = "";
+      }
+    });
+    plannerClearBtn.addEventListener("click", () => {
+      saveMealPlan([]);
+      renderMealPlan();
+    });
+    generateGroceryBtn.addEventListener("click", () => {
+      refreshGroceryList();
+    });
+    copyGroceryBtn.addEventListener("click", async () => {
+      const lines = Array.from(groceryList.querySelectorAll(".grocery-item")).map((item) => item.textContent || "");
+      const text = lines.join("\n");
+      if (!text.trim()) {
+        setGroceryStatus("Nothing to copy yet.");
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        setGroceryStatus("Copied grocery list.");
+      } catch {
+        setGroceryStatus("Copy failed.");
+      }
+    });
+    groceryScopeSelect.addEventListener("change", () => {
+      updateGroceryScopeUI();
+      refreshGroceryList();
+    });
+    groceryDaySelect.addEventListener("change", refreshGroceryList);
+
+    updateGroceryScopeUI();
+    loadPlannerRecipes();
+    renderMealPlan();
+  </script>
+  <script src="/footer.js"></script>
+</body>
+</html>
